@@ -131,7 +131,7 @@ Minimal steps from clone to first successful decode:
 
 ```bash
 # 1. Clone this repository
-git clone https://github.com/<your-username>/uav_telemetry_pipeline.git
+git clone https://github.com/CrypticNuts/uav_telemetry_pipeline.git
 cd uav_telemetry_pipeline
 
 # 2. Install Python dependencies
@@ -421,7 +421,6 @@ The pipeline produces a JSON array with one entry per detected burst:
 
 ## Using Your Own Data
 
-### For your supervisor or collaborators
 
 To use this pipeline with new IQ captures:
 
@@ -611,4 +610,4 @@ Check the `stdout` field in the output JSON for the raw decoder output.
 
 ## License
 
-This project is developed as an academic PFE (Projet de Fin d'Etudes). See your institution's guidelines for usage and distribution terms.
+This project is developed as an academic PFE (Projet de Fin d'Etudes).

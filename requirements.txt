@@ -1,0 +1,12 @@
+# Core pipeline
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+
+# Visualization (burst detection debug plots)
+matplotlib>=3.7
+
+# Required by DroneSecurity decoder (install if using that backend)
+# bitarray>=2.4
+# crcmod>=1.7
+# setuptools    # provides distutils on Python 3.12+

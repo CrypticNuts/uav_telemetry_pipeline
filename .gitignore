@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+
+# Project-specific
+data/samples/*
+!data/samples/.gitkeep
+data/results/*
+!data/results/.gitkeep
+/tmp/
+conversation.txt
+
+# Temp decoder files
+burst*_*/

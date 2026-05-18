@@ -1,0 +1,119 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/mini_2_se/antenne_omni/x310_rawIQ_2434MHz_50Msps_continuous_mini2es.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -134277.34375,
+          "f_start_hz": -10961914.0625,
+          "f_end_hz": 10693359.375,
+          "bandwidth_hz": 21655273.4375,
+          "peak_psd_db_over_mean": 4.36153507232666,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 109863.28125,
+          "f_start_hz": -10400390.625,
+          "f_end_hz": 10620117.1875,
+          "bandwidth_hz": 21020507.8125,
+          "peak_psd_db_over_mean": 4.395033836364746,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -195312.5,
+          "f_start_hz": -10595703.125,
+          "f_end_hz": 10205078.125,
+          "bandwidth_hz": 20800781.25,
+          "peak_psd_db_over_mean": 3.791905403137207,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -134277.34375,
+          "f_start_hz": -11035156.25,
+          "f_end_hz": 10766601.5625,
+          "bandwidth_hz": 21801757.8125,
+          "peak_psd_db_over_mean": 4.143345832824707,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -537109.375,
+          "f_start_hz": -11181640.625,
+          "f_end_hz": 10107421.875,
+          "bandwidth_hz": 21289062.5,
+          "peak_psd_db_over_mean": 4.327711582183838,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 250000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -24414.0625,
+          "f_start_hz": -10986328.125,
+          "f_end_hz": 10937500.0,
+          "bandwidth_hz": 21923828.125,
+          "peak_psd_db_over_mean": 4.062411785125732,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 300000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -122070.3125,
+          "f_start_hz": -10644531.25,
+          "f_end_hz": 10400390.625,
+          "bandwidth_hz": 21044921.875,
+          "peak_psd_db_over_mean": 5.15377950668335,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 350000000,
+      "samples": 807152,
+      "bands": [
+        {
+          "f_center_hz": -915527.34375,
+          "f_start_hz": -10400390.625,
+          "f_end_hz": 8569335.9375,
+          "bandwidth_hz": 18969726.5625,
+          "peak_psd_db_over_mean": 7.4557881355285645,
+          "label": "ocusync_video"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "input": "uav_telemetry_pipeline/data/samples/mavic_air_2",
+  "sample_rate_hz": 50000000.0,
+  "preprocessing": null,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [],
+  "diagnostic": {
+    "file_seconds": 0.005,
+    "samples_analyzed": 225280,
+    "threshold": 0.15,
+    "best_score": 0.681,
+    "best_sample_index": 185193,
+    "burst_min_spacing_samples": 28944,
+    "decim_q": 3,
+    "peaks_above_threshold": 2,
+    "top_peaks": [
+      {
+        "sample_index": 185193,
+        "score": 0.681
+      },
+      {
+        "sample_index": 220815,
+        "score": 0.666
+      }
+    ],
+    "chunks": [
+      {
+        "sample_start": 0,
+        "samples": 225280,
+        "cfo_mhz": -12.463,
+        "best_score": 0.681,
+        "best_sample_index": 61731,
+        "peaks_above_threshold": 2
+      }
+    ]
+  },
+  "frames": []
+}

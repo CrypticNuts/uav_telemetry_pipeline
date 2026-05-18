@@ -1,0 +1,85 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/x310_rawIQ_2435MHz_50Msps_continuous_corne_mini2.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1623535.15625,
+          "f_start_hz": -8203125.0,
+          "f_end_hz": 11450195.3125,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.737297058105469,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1428222.65625,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11083984.375,
+          "bandwidth_hz": 19311523.4375,
+          "peak_psd_db_over_mean": 4.659198760986328,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.508085250854492,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1281738.28125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10791015.625,
+          "bandwidth_hz": 19018554.6875,
+          "peak_psd_db_over_mean": 4.548586845397949,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 42028268,
+      "bands": [
+        {
+          "f_center_hz": -11389160.15625,
+          "f_start_hz": -13378906.25,
+          "f_end_hz": -9399414.0625,
+          "bandwidth_hz": 3979492.1875,
+          "peak_psd_db_over_mean": 9.409869194030762,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17907714.84375,
+          "f_start_hz": -19799804.6875,
+          "f_end_hz": -16015625.0,
+          "bandwidth_hz": 3784179.6875,
+          "peak_psd_db_over_mean": 7.431134223937988,
+          "label": "unknown"
+        }
+      ]
+    }
+  ]
+}

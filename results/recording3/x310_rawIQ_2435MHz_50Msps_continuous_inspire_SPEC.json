@@ -1,0 +1,145 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/antenne_omni/x310_rawIQ_2435MHz_50Msps_continuous_inspirefc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -830078.125,
+          "f_start_hz": -11157226.5625,
+          "f_end_hz": 9497070.3125,
+          "bandwidth_hz": 20654296.875,
+          "peak_psd_db_over_mean": 7.734113693237305,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 14819335.9375,
+          "f_start_hz": 12426757.8125,
+          "f_end_hz": 17211914.0625,
+          "bandwidth_hz": 4785156.25,
+          "peak_psd_db_over_mean": 8.935088157653809,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -292968.75,
+          "f_start_hz": -4589843.75,
+          "f_end_hz": 4003906.25,
+          "bandwidth_hz": 8593750.0,
+          "peak_psd_db_over_mean": 4.577578067779541,
+          "label": "droneid"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -17797851.5625,
+          "f_start_hz": -19897460.9375,
+          "f_end_hz": -15698242.1875,
+          "bandwidth_hz": 4199218.75,
+          "peak_psd_db_over_mean": 7.848443031311035,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -573730.46875,
+          "f_start_hz": -7763671.875,
+          "f_end_hz": 6616210.9375,
+          "bandwidth_hz": 14379882.8125,
+          "peak_psd_db_over_mean": 5.581573963165283,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -427246.09375,
+          "f_start_hz": -10668945.3125,
+          "f_end_hz": 9814453.125,
+          "bandwidth_hz": 20483398.4375,
+          "peak_psd_db_over_mean": 6.7573957443237305,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 20629882.8125,
+          "f_start_hz": 18750000.0,
+          "f_end_hz": 22509765.625,
+          "bandwidth_hz": 3759765.625,
+          "peak_psd_db_over_mean": 5.7363433837890625,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -524902.34375,
+          "f_start_hz": -9350585.9375,
+          "f_end_hz": 8300781.25,
+          "bandwidth_hz": 17651367.1875,
+          "peak_psd_db_over_mean": 5.6976118087768555,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 250000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 14978027.34375,
+          "f_start_hz": 12670898.4375,
+          "f_end_hz": 17285156.25,
+          "bandwidth_hz": 4614257.8125,
+          "peak_psd_db_over_mean": 9.222172737121582,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": 1123046.875,
+          "f_start_hz": -3417968.75,
+          "f_end_hz": 5664062.5,
+          "bandwidth_hz": 9082031.25,
+          "peak_psd_db_over_mean": 4.597469329833984,
+          "label": "droneid"
+        }
+      ]
+    },
+    {
+      "sample_start": 300000000,
+      "samples": 2693600,
+      "bands": [
+        {
+          "f_center_hz": -17810058.59375,
+          "f_start_hz": -19921875.0,
+          "f_end_hz": -15698242.1875,
+          "bandwidth_hz": 4223632.8125,
+          "peak_psd_db_over_mean": 8.463077545166016,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -537109.375,
+          "f_start_hz": -7055664.0625,
+          "f_end_hz": 5981445.3125,
+          "bandwidth_hz": 13037109.375,
+          "peak_psd_db_over_mean": 5.00922155380249,
+          "label": "unknown"
+        }
+      ]
+    }
+  ]
+}

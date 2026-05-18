@@ -1,0 +1,85 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/x310_rawIQ_2435MHz_50Msps_continuous_corne_inspire.fc32",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [],
+  "diagnostic": {
+    "file_seconds": 6.453,
+    "samples_analyzed": 322627774,
+    "threshold": 0.15,
+    "best_score": 0.155,
+    "best_sample_index": 306977895,
+    "burst_min_spacing_samples": 28944,
+    "decim_q": 3,
+    "peaks_above_threshold": 1,
+    "top_peaks": [
+      {
+        "sample_index": 306977895,
+        "score": 0.155
+      }
+    ],
+    "chunks": [
+      {
+        "sample_start": 0,
+        "samples": 50000000,
+        "cfo_mhz": -16.602,
+        "best_score": 0.148,
+        "best_sample_index": 2603140,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 50000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.127,
+        "best_sample_index": 53868530,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 100000000,
+        "samples": 50000000,
+        "cfo_mhz": -16.663,
+        "best_score": 0.139,
+        "best_sample_index": 101207000,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 150000000,
+        "samples": 50000000,
+        "cfo_mhz": -15.32,
+        "best_score": 0.144,
+        "best_sample_index": 153201047,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 200000000,
+        "samples": 50000000,
+        "cfo_mhz": -16.65,
+        "best_score": 0.145,
+        "best_sample_index": 205055528,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 250000000,
+        "samples": 50000000,
+        "cfo_mhz": -17.163,
+        "best_score": 0.147,
+        "best_sample_index": 254841309,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 300000000,
+        "samples": 22627774,
+        "cfo_mhz": -16.577,
+        "best_score": 0.155,
+        "best_sample_index": 302325965,
+        "peaks_above_threshold": 1
+      }
+    ]
+  },
+  "frames": []
+}

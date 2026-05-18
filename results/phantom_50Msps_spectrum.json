@@ -1,0 +1,49 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/x310_rawIQ_2435MHz_50Msps_continuous_corne_phantom.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 75000000,
+      "bands": [
+        {
+          "f_center_hz": 280761.71875,
+          "f_start_hz": -10742187.5,
+          "f_end_hz": 11303710.9375,
+          "bandwidth_hz": 22045898.4375,
+          "peak_psd_db_over_mean": 4.566637992858887,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 75000000,
+      "samples": 75000000,
+      "bands": [
+        {
+          "f_center_hz": 195312.5,
+          "f_start_hz": -11108398.4375,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 22607421.875,
+          "peak_psd_db_over_mean": 4.106804847717285,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 35395468,
+      "bands": [
+        {
+          "f_center_hz": 61035.15625,
+          "f_start_hz": -11376953.125,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 22875976.5625,
+          "peak_psd_db_over_mean": 3.973849058151245,
+          "label": "unknown"
+        }
+      ]
+    }
+  ]
+}

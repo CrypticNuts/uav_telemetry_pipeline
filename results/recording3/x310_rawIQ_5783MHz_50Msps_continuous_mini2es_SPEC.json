@@ -1,0 +1,77 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/mini_2_se/antenne_omni/x310_rawIQ_5783MHz_50Msps_continuous_mini2es.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 158691.40625,
+          "f_start_hz": -10473632.8125,
+          "f_end_hz": 10791015.625,
+          "bandwidth_hz": 21264648.4375,
+          "peak_psd_db_over_mean": 4.134690284729004,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 219726.5625,
+          "f_start_hz": -10498046.875,
+          "f_end_hz": 10937500.0,
+          "bandwidth_hz": 21435546.875,
+          "peak_psd_db_over_mean": 4.275539398193359,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 134277.34375,
+          "f_start_hz": -11035156.25,
+          "f_end_hz": 11303710.9375,
+          "bandwidth_hz": 22338867.1875,
+          "peak_psd_db_over_mean": 4.256115436553955,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -378417.96875,
+          "f_start_hz": -10375976.5625,
+          "f_end_hz": 9619140.625,
+          "bandwidth_hz": 19995117.1875,
+          "peak_psd_db_over_mean": 4.861238479614258,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 45999176,
+      "bands": [
+        {
+          "f_center_hz": 195312.5,
+          "f_start_hz": -10864257.8125,
+          "f_end_hz": 11254882.8125,
+          "bandwidth_hz": 22119140.625,
+          "peak_psd_db_over_mean": 4.478731632232666,
+          "label": "ocusync_video"
+        }
+      ]
+    }
+  ]
+}

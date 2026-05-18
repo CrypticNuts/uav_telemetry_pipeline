@@ -1,0 +1,1321 @@
+{
+  "window_sec": 0.1,
+  "sample_rate_hz": 50000000.0,
+  "mini2": [
+    {
+      "t_sec": 0.0,
+      "bands": [
+        {
+          "f_center_hz": 1623535.15625,
+          "f_start_hz": -8203125.0,
+          "f_end_hz": 11450195.3125,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.737297058105469,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.1,
+      "bands": [
+        {
+          "f_center_hz": 1538085.9375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11303710.9375,
+          "bandwidth_hz": 19531250.0,
+          "peak_psd_db_over_mean": 4.7002177238464355,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.2,
+      "bands": [
+        {
+          "f_center_hz": 1611328.125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11450195.3125,
+          "bandwidth_hz": 19677734.375,
+          "peak_psd_db_over_mean": 4.682032585144043,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.3,
+      "bands": [
+        {
+          "f_center_hz": 1647949.21875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11523437.5,
+          "bandwidth_hz": 19750976.5625,
+          "peak_psd_db_over_mean": 4.6189446449279785,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.4,
+      "bands": [
+        {
+          "f_center_hz": 1611328.125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11450195.3125,
+          "bandwidth_hz": 19677734.375,
+          "peak_psd_db_over_mean": 4.815038204193115,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.5,
+      "bands": [
+        {
+          "f_center_hz": 1489257.8125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11206054.6875,
+          "bandwidth_hz": 19433593.75,
+          "peak_psd_db_over_mean": 4.662092685699463,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.6,
+      "bands": [
+        {
+          "f_center_hz": 1269531.25,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10766601.5625,
+          "bandwidth_hz": 18994140.625,
+          "peak_psd_db_over_mean": 4.725272178649902,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.7,
+      "bands": [
+        {
+          "f_center_hz": 1513671.875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11254882.8125,
+          "bandwidth_hz": 19482421.875,
+          "peak_psd_db_over_mean": 4.495492935180664,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.8,
+      "bands": [
+        {
+          "f_center_hz": 1501464.84375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11230468.75,
+          "bandwidth_hz": 19458007.8125,
+          "peak_psd_db_over_mean": 4.6538801193237305,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.9,
+      "bands": [
+        {
+          "f_center_hz": 1635742.1875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 19726562.5,
+          "peak_psd_db_over_mean": 4.55274772644043,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.0,
+      "bands": [
+        {
+          "f_center_hz": 1428222.65625,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11083984.375,
+          "bandwidth_hz": 19311523.4375,
+          "peak_psd_db_over_mean": 4.659198760986328,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.1,
+      "bands": [
+        {
+          "f_center_hz": 1611328.125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11450195.3125,
+          "bandwidth_hz": 19677734.375,
+          "peak_psd_db_over_mean": 4.532044887542725,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.2,
+      "bands": [
+        {
+          "f_center_hz": 1538085.9375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11303710.9375,
+          "bandwidth_hz": 19531250.0,
+          "peak_psd_db_over_mean": 4.65363883972168,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.3,
+      "bands": [
+        {
+          "f_center_hz": 1464843.75,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11157226.5625,
+          "bandwidth_hz": 19384765.625,
+          "peak_psd_db_over_mean": 4.94058084487915,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.4,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.93733549118042,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.5,
+      "bands": [
+        {
+          "f_center_hz": 1745605.46875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11718750.0,
+          "bandwidth_hz": 19946289.0625,
+          "peak_psd_db_over_mean": 4.715629577636719,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.6,
+      "bands": [
+        {
+          "f_center_hz": 1293945.3125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10815429.6875,
+          "bandwidth_hz": 19042968.75,
+          "peak_psd_db_over_mean": 4.622671604156494,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.7,
+      "bands": [
+        {
+          "f_center_hz": 1367187.5,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10961914.0625,
+          "bandwidth_hz": 19189453.125,
+          "peak_psd_db_over_mean": 4.622542381286621,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.8,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.483570575714111,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.9,
+      "bands": [
+        {
+          "f_center_hz": 1354980.46875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10937500.0,
+          "bandwidth_hz": 19165039.0625,
+          "peak_psd_db_over_mean": 4.443671226501465,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.0,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.508085250854492,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.1,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.50155782699585,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.2,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.733738899230957,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.3,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.610848903656006,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.4,
+      "bands": [
+        {
+          "f_center_hz": 1281738.28125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10791015.625,
+          "bandwidth_hz": 19018554.6875,
+          "peak_psd_db_over_mean": 4.537258625030518,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.5,
+      "bands": [
+        {
+          "f_center_hz": 1464843.75,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11157226.5625,
+          "bandwidth_hz": 19384765.625,
+          "peak_psd_db_over_mean": 4.534852981567383,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.6,
+      "bands": [
+        {
+          "f_center_hz": 1464843.75,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11157226.5625,
+          "bandwidth_hz": 19384765.625,
+          "peak_psd_db_over_mean": 4.382951736450195,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.7,
+      "bands": [
+        {
+          "f_center_hz": 1501464.84375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11230468.75,
+          "bandwidth_hz": 19458007.8125,
+          "peak_psd_db_over_mean": 4.610560894012451,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.8,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.563987731933594,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.9,
+      "bands": [
+        {
+          "f_center_hz": 1354980.46875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10937500.0,
+          "bandwidth_hz": 19165039.0625,
+          "peak_psd_db_over_mean": 4.424314975738525,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.0,
+      "bands": [
+        {
+          "f_center_hz": 1281738.28125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10791015.625,
+          "bandwidth_hz": 19018554.6875,
+          "peak_psd_db_over_mean": 4.548586845397949,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.1,
+      "bands": [
+        {
+          "f_center_hz": 1599121.09375,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19653320.3125,
+          "peak_psd_db_over_mean": 4.52545690536499,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.2,
+      "bands": [
+        {
+          "f_center_hz": 1281738.28125,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 10791015.625,
+          "bandwidth_hz": 19018554.6875,
+          "peak_psd_db_over_mean": 4.494072437286377,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.3,
+      "bands": [
+        {
+          "f_center_hz": 1550292.96875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11328125.0,
+          "bandwidth_hz": 19555664.0625,
+          "peak_psd_db_over_mean": 4.432104110717773,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.4,
+      "bands": [
+        {
+          "f_center_hz": 1513671.875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11254882.8125,
+          "bandwidth_hz": 19482421.875,
+          "peak_psd_db_over_mean": 4.483240127563477,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.5,
+      "bands": [
+        {
+          "f_center_hz": 1611328.125,
+          "f_start_hz": -8203125.0,
+          "f_end_hz": 11425781.25,
+          "bandwidth_hz": 19628906.25,
+          "peak_psd_db_over_mean": 4.4266157150268555,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.6,
+      "bands": [
+        {
+          "f_center_hz": 1452636.71875,
+          "f_start_hz": -8227539.0625,
+          "f_end_hz": 11132812.5,
+          "bandwidth_hz": 19360351.5625,
+          "peak_psd_db_over_mean": 4.523746967315674,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.7,
+      "bands": [
+        {
+          "f_center_hz": -11425781.25,
+          "f_start_hz": -13403320.3125,
+          "f_end_hz": -9448242.1875,
+          "bandwidth_hz": 3955078.125,
+          "peak_psd_db_over_mean": 11.236177444458008,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18579101.5625,
+          "f_start_hz": -19165039.0625,
+          "f_end_hz": -17993164.0625,
+          "bandwidth_hz": 1171875.0,
+          "peak_psd_db_over_mean": 4.0621466636657715,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.8,
+      "bands": [
+        {
+          "f_center_hz": -11401367.1875,
+          "f_start_hz": -13378906.25,
+          "f_end_hz": -9423828.125,
+          "bandwidth_hz": 3955078.125,
+          "peak_psd_db_over_mean": 11.196952819824219,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18542480.46875,
+          "f_start_hz": -19409179.6875,
+          "f_end_hz": -17675781.25,
+          "bandwidth_hz": 1733398.4375,
+          "peak_psd_db_over_mean": 4.850196361541748,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.9,
+      "bands": [
+        {
+          "f_center_hz": -11352539.0625,
+          "f_start_hz": -13305664.0625,
+          "f_end_hz": -9399414.0625,
+          "bandwidth_hz": 3906250.0,
+          "peak_psd_db_over_mean": 10.561349868774414,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17871093.75,
+          "f_start_hz": -19750976.5625,
+          "f_end_hz": -15991210.9375,
+          "bandwidth_hz": 3759765.625,
+          "peak_psd_db_over_mean": 7.13777494430542,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.0,
+      "bands": [
+        {
+          "f_center_hz": -11389160.15625,
+          "f_start_hz": -13378906.25,
+          "f_end_hz": -9399414.0625,
+          "bandwidth_hz": 3979492.1875,
+          "peak_psd_db_over_mean": 9.409869194030762,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17907714.84375,
+          "f_start_hz": -19799804.6875,
+          "f_end_hz": -16015625.0,
+          "bandwidth_hz": 3784179.6875,
+          "peak_psd_db_over_mean": 7.431134223937988,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.1,
+      "bands": [
+        {
+          "f_center_hz": -11389160.15625,
+          "f_start_hz": -13452148.4375,
+          "f_end_hz": -9326171.875,
+          "bandwidth_hz": 4125976.5625,
+          "peak_psd_db_over_mean": 10.733059883117676,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18518066.40625,
+          "f_start_hz": -19360351.5625,
+          "f_end_hz": -17675781.25,
+          "bandwidth_hz": 1684570.3125,
+          "peak_psd_db_over_mean": 5.451688289642334,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.2,
+      "bands": [
+        {
+          "f_center_hz": -11267089.84375,
+          "f_start_hz": -13232421.875,
+          "f_end_hz": -9301757.8125,
+          "bandwidth_hz": 3930664.0625,
+          "peak_psd_db_over_mean": 8.243574142456055,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17956542.96875,
+          "f_start_hz": -19799804.6875,
+          "f_end_hz": -16113281.25,
+          "bandwidth_hz": 3686523.4375,
+          "peak_psd_db_over_mean": 4.9726080894470215,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -573730.46875,
+          "f_start_hz": -1660156.25,
+          "f_end_hz": 512695.3125,
+          "bandwidth_hz": 2172851.5625,
+          "peak_psd_db_over_mean": 3.0693202018737793,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": 1086425.78125,
+          "f_start_hz": 561523.4375,
+          "f_end_hz": 1611328.125,
+          "bandwidth_hz": 1049804.6875,
+          "peak_psd_db_over_mean": 2.335327625274658,
+          "label": "c2_control"
+        },
+        {
+          "f_center_hz": -3747558.59375,
+          "f_start_hz": -4272460.9375,
+          "f_end_hz": -3222656.25,
+          "bandwidth_hz": 1049804.6875,
+          "peak_psd_db_over_mean": 1.7612240314483643,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.3,
+      "bands": [
+        {
+          "f_center_hz": -11315917.96875,
+          "f_start_hz": -13305664.0625,
+          "f_end_hz": -9326171.875,
+          "bandwidth_hz": 3979492.1875,
+          "peak_psd_db_over_mean": 8.287867546081543,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17980957.03125,
+          "f_start_hz": -19824218.75,
+          "f_end_hz": -16137695.3125,
+          "bandwidth_hz": 3686523.4375,
+          "peak_psd_db_over_mean": 4.459860801696777,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -573730.46875,
+          "f_start_hz": -3173828.125,
+          "f_end_hz": 2026367.1875,
+          "bandwidth_hz": 5200195.3125,
+          "peak_psd_db_over_mean": 3.113990306854248,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -3955078.125,
+          "f_start_hz": -4687500.0,
+          "f_end_hz": -3222656.25,
+          "bandwidth_hz": 1464843.75,
+          "peak_psd_db_over_mean": 1.6567561626434326,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.4,
+      "bands": [
+        {
+          "f_center_hz": -11242675.78125,
+          "f_start_hz": -13256835.9375,
+          "f_end_hz": -9228515.625,
+          "bandwidth_hz": 4028320.3125,
+          "peak_psd_db_over_mean": 8.266149520874023,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18090820.3125,
+          "f_start_hz": -19995117.1875,
+          "f_end_hz": -16186523.4375,
+          "bandwidth_hz": 3808593.75,
+          "peak_psd_db_over_mean": 4.633110046386719,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -341796.875,
+          "f_start_hz": -1269531.25,
+          "f_end_hz": 585937.5,
+          "bandwidth_hz": 1855468.75,
+          "peak_psd_db_over_mean": 3.2085142135620117,
+          "label": "c2_control"
+        },
+        {
+          "f_center_hz": 1684570.3125,
+          "f_start_hz": 634765.625,
+          "f_end_hz": 2734375.0,
+          "bandwidth_hz": 2099609.375,
+          "peak_psd_db_over_mean": 2.364124298095703,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -3393554.6875,
+          "f_start_hz": -4125976.5625,
+          "f_end_hz": -2661132.8125,
+          "bandwidth_hz": 1464843.75,
+          "peak_psd_db_over_mean": 1.3694157600402832,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.5,
+      "bands": [
+        {
+          "f_center_hz": -11291503.90625,
+          "f_start_hz": -13281250.0,
+          "f_end_hz": -9301757.8125,
+          "bandwidth_hz": 3979492.1875,
+          "peak_psd_db_over_mean": 8.154598236083984,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18957519.53125,
+          "f_start_hz": -20043945.3125,
+          "f_end_hz": -17871093.75,
+          "bandwidth_hz": 2172851.5625,
+          "peak_psd_db_over_mean": 4.016099452972412,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": 610351.5625,
+          "f_start_hz": -952148.4375,
+          "f_end_hz": 2172851.5625,
+          "bandwidth_hz": 3125000.0,
+          "peak_psd_db_over_mean": 3.043623447418213,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -1525878.90625,
+          "f_start_hz": -2050781.25,
+          "f_end_hz": -1000976.5625,
+          "bandwidth_hz": 1049804.6875,
+          "peak_psd_db_over_mean": 2.16322660446167,
+          "label": "c2_control"
+        },
+        {
+          "f_center_hz": -3149414.0625,
+          "f_start_hz": -3710937.5,
+          "f_end_hz": -2587890.625,
+          "bandwidth_hz": 1123046.875,
+          "peak_psd_db_over_mean": 1.6354994773864746,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.6,
+      "bands": [
+        {
+          "f_center_hz": -11279296.875,
+          "f_start_hz": -13305664.0625,
+          "f_end_hz": -9252929.6875,
+          "bandwidth_hz": 4052734.375,
+          "peak_psd_db_over_mean": 9.116838455200195,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -18762207.03125,
+          "f_start_hz": -19824218.75,
+          "f_end_hz": -17700195.3125,
+          "bandwidth_hz": 2124023.4375,
+          "peak_psd_db_over_mean": 3.738654851913452,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -292968.75,
+          "f_start_hz": -2050781.25,
+          "f_end_hz": 1464843.75,
+          "bandwidth_hz": 3515625.0,
+          "peak_psd_db_over_mean": 3.449554920196533,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": 2246093.75,
+          "f_start_hz": 1513671.875,
+          "f_end_hz": 2978515.625,
+          "bandwidth_hz": 1464843.75,
+          "peak_psd_db_over_mean": 1.9563121795654297,
+          "label": "c2_control"
+        }
+      ]
+    },
+    {
+      "t_sec": 4.7,
+      "bands": [
+        {
+          "f_center_hz": -11303710.9375,
+          "f_start_hz": -13256835.9375,
+          "f_end_hz": -9350585.9375,
+          "bandwidth_hz": 3906250.0,
+          "peak_psd_db_over_mean": 6.9951348304748535,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -17968750.0,
+          "f_start_hz": -19848632.8125,
+          "f_end_hz": -16088867.1875,
+          "bandwidth_hz": 3759765.625,
+          "peak_psd_db_over_mean": 5.459040641784668,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -1916503.90625,
+          "f_start_hz": -6713867.1875,
+          "f_end_hz": 2880859.375,
+          "bandwidth_hz": 9594726.5625,
+          "peak_psd_db_over_mean": 3.715850830078125,
+          "label": "droneid"
+        },
+        {
+          "f_center_hz": 3784179.6875,
+          "f_start_hz": 2929687.5,
+          "f_end_hz": 4638671.875,
+          "bandwidth_hz": 1708984.375,
+          "peak_psd_db_over_mean": 1.922011375427246,
+          "label": "c2_control"
+        }
+      ]
+    }
+  ],
+  "phantom": [
+    {
+      "t_sec": 0.0,
+      "bands": [
+        {
+          "f_center_hz": 280761.71875,
+          "f_start_hz": -10742187.5,
+          "f_end_hz": 11303710.9375,
+          "bandwidth_hz": 22045898.4375,
+          "peak_psd_db_over_mean": 4.566637992858887,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.1,
+      "bands": [
+        {
+          "f_center_hz": 195312.5,
+          "f_start_hz": -10522460.9375,
+          "f_end_hz": 10913085.9375,
+          "bandwidth_hz": 21435546.875,
+          "peak_psd_db_over_mean": 4.8818793296813965,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.2,
+      "bands": [
+        {
+          "f_center_hz": 170898.4375,
+          "f_start_hz": -10791015.625,
+          "f_end_hz": 11132812.5,
+          "bandwidth_hz": 21923828.125,
+          "peak_psd_db_over_mean": 4.8626251220703125,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.3,
+      "bands": [
+        {
+          "f_center_hz": 622558.59375,
+          "f_start_hz": -10717773.4375,
+          "f_end_hz": 11962890.625,
+          "bandwidth_hz": 22680664.0625,
+          "peak_psd_db_over_mean": 4.2149739265441895,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.4,
+      "bands": [
+        {
+          "f_center_hz": 244140.625,
+          "f_start_hz": -10693359.375,
+          "f_end_hz": 11181640.625,
+          "bandwidth_hz": 21875000.0,
+          "peak_psd_db_over_mean": 4.216658592224121,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.5,
+      "bands": [
+        {
+          "f_center_hz": 866699.21875,
+          "f_start_hz": -9912109.375,
+          "f_end_hz": 11645507.8125,
+          "bandwidth_hz": 21557617.1875,
+          "peak_psd_db_over_mean": 4.278251647949219,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.6,
+      "bands": [
+        {
+          "f_center_hz": 549316.40625,
+          "f_start_hz": -10400390.625,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 21899414.0625,
+          "peak_psd_db_over_mean": 4.418868064880371,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.7,
+      "bands": [
+        {
+          "f_center_hz": -634765.625,
+          "f_start_hz": -12548828.125,
+          "f_end_hz": 11279296.875,
+          "bandwidth_hz": 23828125.0,
+          "peak_psd_db_over_mean": 3.8643460273742676,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.8,
+      "bands": [
+        {
+          "f_center_hz": -402832.03125,
+          "f_start_hz": -11816406.25,
+          "f_end_hz": 11010742.1875,
+          "bandwidth_hz": 22827148.4375,
+          "peak_psd_db_over_mean": 3.892826557159424,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 0.9,
+      "bands": [
+        {
+          "f_center_hz": -366210.9375,
+          "f_start_hz": -11816406.25,
+          "f_end_hz": 11083984.375,
+          "bandwidth_hz": 22900390.625,
+          "peak_psd_db_over_mean": 4.220306396484375,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.0,
+      "bands": [
+        {
+          "f_center_hz": 292968.75,
+          "f_start_hz": -10327148.4375,
+          "f_end_hz": 10913085.9375,
+          "bandwidth_hz": 21240234.375,
+          "peak_psd_db_over_mean": 4.080327987670898,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.1,
+      "bands": [
+        {
+          "f_center_hz": 122070.3125,
+          "f_start_hz": -10815429.6875,
+          "f_end_hz": 11059570.3125,
+          "bandwidth_hz": 21875000.0,
+          "peak_psd_db_over_mean": 4.038534641265869,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.2,
+      "bands": [
+        {
+          "f_center_hz": 24414.0625,
+          "f_start_hz": -11010742.1875,
+          "f_end_hz": 11059570.3125,
+          "bandwidth_hz": 22070312.5,
+          "peak_psd_db_over_mean": 4.2054853439331055,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.3,
+      "bands": [
+        {
+          "f_center_hz": 109863.28125,
+          "f_start_hz": -11279296.875,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 22778320.3125,
+          "peak_psd_db_over_mean": 4.043580055236816,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.4,
+      "bands": [
+        {
+          "f_center_hz": 341796.875,
+          "f_start_hz": -11010742.1875,
+          "f_end_hz": 11694335.9375,
+          "bandwidth_hz": 22705078.125,
+          "peak_psd_db_over_mean": 4.136586666107178,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.5,
+      "bands": [
+        {
+          "f_center_hz": 195312.5,
+          "f_start_hz": -11108398.4375,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 22607421.875,
+          "peak_psd_db_over_mean": 4.106804847717285,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.6,
+      "bands": [
+        {
+          "f_center_hz": -610351.5625,
+          "f_start_hz": -12133789.0625,
+          "f_end_hz": 10913085.9375,
+          "bandwidth_hz": 23046875.0,
+          "peak_psd_db_over_mean": 4.111032009124756,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.7,
+      "bands": [
+        {
+          "f_center_hz": 292968.75,
+          "f_start_hz": -10473632.8125,
+          "f_end_hz": 11059570.3125,
+          "bandwidth_hz": 21533203.125,
+          "peak_psd_db_over_mean": 3.952910900115967,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.8,
+      "bands": [
+        {
+          "f_center_hz": 341796.875,
+          "f_start_hz": -10791015.625,
+          "f_end_hz": 11474609.375,
+          "bandwidth_hz": 22265625.0,
+          "peak_psd_db_over_mean": 3.9864678382873535,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 1.9,
+      "bands": [
+        {
+          "f_center_hz": 512695.3125,
+          "f_start_hz": -10473632.8125,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 21972656.25,
+          "peak_psd_db_over_mean": 3.949584722518921,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.0,
+      "bands": [
+        {
+          "f_center_hz": -85449.21875,
+          "f_start_hz": -11083984.375,
+          "f_end_hz": 10913085.9375,
+          "bandwidth_hz": 21997070.3125,
+          "peak_psd_db_over_mean": 4.179470062255859,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.1,
+      "bands": [
+        {
+          "f_center_hz": 73242.1875,
+          "f_start_hz": -10937500.0,
+          "f_end_hz": 11083984.375,
+          "bandwidth_hz": 22021484.375,
+          "peak_psd_db_over_mean": 4.177248477935791,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.2,
+      "bands": [
+        {
+          "f_center_hz": 488281.25,
+          "f_start_hz": -10424804.6875,
+          "f_end_hz": 11401367.1875,
+          "bandwidth_hz": 21826171.875,
+          "peak_psd_db_over_mean": 3.973029613494873,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.3,
+      "bands": [
+        {
+          "f_center_hz": 573730.46875,
+          "f_start_hz": -10522460.9375,
+          "f_end_hz": 11669921.875,
+          "bandwidth_hz": 22192382.8125,
+          "peak_psd_db_over_mean": 4.278924942016602,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.4,
+      "bands": [
+        {
+          "f_center_hz": 207519.53125,
+          "f_start_hz": -10766601.5625,
+          "f_end_hz": 11181640.625,
+          "bandwidth_hz": 21948242.1875,
+          "peak_psd_db_over_mean": 4.228878021240234,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.5,
+      "bands": [
+        {
+          "f_center_hz": 720214.84375,
+          "f_start_hz": -10595703.125,
+          "f_end_hz": 12036132.8125,
+          "bandwidth_hz": 22631835.9375,
+          "peak_psd_db_over_mean": 4.527231693267822,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.6,
+      "bands": [
+        {
+          "f_center_hz": 610351.5625,
+          "f_start_hz": -10595703.125,
+          "f_end_hz": 11816406.25,
+          "bandwidth_hz": 22412109.375,
+          "peak_psd_db_over_mean": 4.081423759460449,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.7,
+      "bands": [
+        {
+          "f_center_hz": 305175.78125,
+          "f_start_hz": -10864257.8125,
+          "f_end_hz": 11474609.375,
+          "bandwidth_hz": 22338867.1875,
+          "peak_psd_db_over_mean": 3.932237148284912,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.8,
+      "bands": [
+        {
+          "f_center_hz": -12207.03125,
+          "f_start_hz": -11303710.9375,
+          "f_end_hz": 11279296.875,
+          "bandwidth_hz": 22583007.8125,
+          "peak_psd_db_over_mean": 4.361830711364746,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 2.9,
+      "bands": [
+        {
+          "f_center_hz": -390625.0,
+          "f_start_hz": -11376953.125,
+          "f_end_hz": 10595703.125,
+          "bandwidth_hz": 21972656.25,
+          "peak_psd_db_over_mean": 4.100890159606934,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.0,
+      "bands": [
+        {
+          "f_center_hz": 61035.15625,
+          "f_start_hz": -11376953.125,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 22875976.5625,
+          "peak_psd_db_over_mean": 3.973849058151245,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.1,
+      "bands": [
+        {
+          "f_center_hz": 756835.9375,
+          "f_start_hz": -10424804.6875,
+          "f_end_hz": 11938476.5625,
+          "bandwidth_hz": 22363281.25,
+          "peak_psd_db_over_mean": 3.8876044750213623,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.2,
+      "bands": [
+        {
+          "f_center_hz": 524902.34375,
+          "f_start_hz": -10595703.125,
+          "f_end_hz": 11645507.8125,
+          "bandwidth_hz": 22241210.9375,
+          "peak_psd_db_over_mean": 3.999014139175415,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.3,
+      "bands": [
+        {
+          "f_center_hz": 598144.53125,
+          "f_start_hz": -10766601.5625,
+          "f_end_hz": 11962890.625,
+          "bandwidth_hz": 22729492.1875,
+          "peak_psd_db_over_mean": 3.8693010807037354,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.4,
+      "bands": [
+        {
+          "f_center_hz": 341796.875,
+          "f_start_hz": -11035156.25,
+          "f_end_hz": 11718750.0,
+          "bandwidth_hz": 22753906.25,
+          "peak_psd_db_over_mean": 4.065654277801514,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.5,
+      "bands": [
+        {
+          "f_center_hz": 207519.53125,
+          "f_start_hz": -11230468.75,
+          "f_end_hz": 11645507.8125,
+          "bandwidth_hz": 22875976.5625,
+          "peak_psd_db_over_mean": 3.869384288787842,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "t_sec": 3.6,
+      "bands": [
+        {
+          "f_center_hz": -537109.375,
+          "f_start_hz": -12109375.0,
+          "f_end_hz": 11035156.25,
+          "bandwidth_hz": 23144531.25,
+          "peak_psd_db_over_mean": 3.829064130783081,
+          "label": "ocusync_video"
+        }
+      ]
+    }
+  ]
+}

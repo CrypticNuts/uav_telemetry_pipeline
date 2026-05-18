@@ -1,0 +1,120 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/matriceM30/antenne_omni/x310_rawIQ_2435MHz_50Msps_continuous_M30.fc32",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [],
+  "diagnostic": {
+    "file_seconds": 11.235,
+    "samples_analyzed": 561745120,
+    "threshold": 0.15,
+    "best_score": 0.141,
+    "best_sample_index": 363045692,
+    "burst_min_spacing_samples": 28944,
+    "decim_q": 3,
+    "peaks_above_threshold": 0,
+    "top_peaks": [],
+    "chunks": [
+      {
+        "sample_start": 0,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.134,
+        "best_sample_index": 11410533,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 50000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.137,
+        "best_sample_index": 51396869,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 100000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.132,
+        "best_sample_index": 102032895,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 150000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.129,
+        "best_sample_index": 153046465,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 200000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.135,
+        "best_sample_index": 211566874,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 250000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.136,
+        "best_sample_index": 259065442,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 300000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.137,
+        "best_sample_index": 315406233,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 350000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.141,
+        "best_sample_index": 354348564,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 400000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.134,
+        "best_sample_index": 403385404,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 450000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.128,
+        "best_sample_index": 453044250,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 500000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.129,
+        "best_sample_index": 502182801,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 550000000,
+        "samples": 11745120,
+        "cfo_mhz": 0.0,
+        "best_score": 0.124,
+        "best_sample_index": 552911462,
+        "peaks_above_threshold": 0
+      }
+    ]
+  },
+  "frames": []
+}

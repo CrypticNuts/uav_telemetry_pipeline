@@ -1,0 +1,79 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/antenne_omni/x310_rawIQ_5755MHz_50Msps_continuous_inspirefc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 585937.5,
+          "f_start_hz": -8984375.0,
+          "f_end_hz": 10156250.0,
+          "bandwidth_hz": 19140625.0,
+          "peak_psd_db_over_mean": 8.6183443069458,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 4443359.375,
+          "f_start_hz": -903320.3125,
+          "f_end_hz": 9790039.0625,
+          "bandwidth_hz": 10693359.375,
+          "peak_psd_db_over_mean": 8.39715576171875,
+          "burst_count": 8,
+          "burst_rate_hz": 16.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -109863.28125,
+          "f_start_hz": -10522460.9375,
+          "f_end_hz": 10302734.375,
+          "bandwidth_hz": 20825195.3125,
+          "peak_psd_db_over_mean": 9.232178688049316,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 683593.75,
+          "f_start_hz": -9130859.375,
+          "f_end_hz": 10498046.875,
+          "bandwidth_hz": 19628906.25,
+          "peak_psd_db_over_mean": 9.572576522827148,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 6282440,
+      "bands": [
+        {
+          "f_center_hz": 170898.4375,
+          "f_start_hz": -10058593.75,
+          "f_end_hz": 10400390.625,
+          "bandwidth_hz": 20458984.375,
+          "peak_psd_db_over_mean": 9.354734420776367,
+          "label": "ocusync_video"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,11 @@
-"""Preprocessor module — IQ data loading and conversion."""
+"""Preprocessor module — IQ data loading and conversion.
 
-from .csv_to_iq import convert_csv_to_iq
-from .load_verified_iq import load_verified_iq
+Only ``shift_and_filter`` is exported eagerly because it's used by the
+runner. ``csv_to_iq`` and ``load_verified_iq`` have heavier optional
+dependencies (pandas; sibling ``telemetry`` package); callers that want
+them should import directly from the submodule.
+"""
 
-__all__ = ["convert_csv_to_iq", "load_verified_iq"]
+from .shift_and_filter import shift_and_filter
+
+__all__ = ["shift_and_filter"]

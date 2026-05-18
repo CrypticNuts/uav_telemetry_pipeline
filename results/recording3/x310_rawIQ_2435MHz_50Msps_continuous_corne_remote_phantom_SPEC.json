@@ -1,0 +1,91 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/phantom/x310_rawIQ_2435MHz_50Msps_continuous_corne_remote_phantom.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 598144.53125,
+          "f_start_hz": -10327148.4375,
+          "f_end_hz": 11523437.5,
+          "bandwidth_hz": 21850585.9375,
+          "peak_psd_db_over_mean": 3.9658093452453613,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -402832.03125,
+          "f_start_hz": -11401367.1875,
+          "f_end_hz": 10595703.125,
+          "bandwidth_hz": 21997070.3125,
+          "peak_psd_db_over_mean": 6.0671234130859375,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 6372070.3125,
+          "f_start_hz": 5249023.4375,
+          "f_end_hz": 7495117.1875,
+          "bandwidth_hz": 2246093.75,
+          "peak_psd_db_over_mean": 29.517324447631836,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -292968.75,
+          "f_start_hz": -11108398.4375,
+          "f_end_hz": 10522460.9375,
+          "bandwidth_hz": 21630859.375,
+          "peak_psd_db_over_mean": 5.872964859008789,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -488281.25,
+          "f_start_hz": -11401367.1875,
+          "f_end_hz": 10424804.6875,
+          "bandwidth_hz": 21826171.875,
+          "peak_psd_db_over_mean": 6.240373611450195,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 250000000,
+      "samples": 35800557,
+      "bands": [
+        {
+          "f_center_hz": -280761.71875,
+          "f_start_hz": -11108398.4375,
+          "f_end_hz": 10546875.0,
+          "bandwidth_hz": 21655273.4375,
+          "peak_psd_db_over_mean": 5.637789249420166,
+          "label": "ocusync_video"
+        }
+      ]
+    }
+  ]
+}

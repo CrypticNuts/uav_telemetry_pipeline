@@ -1,0 +1,79 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/x310_rawIQ_5755MHz_50Msps_continuous_corne_inspire.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1025390.625,
+          "f_start_hz": -9448242.1875,
+          "f_end_hz": 11499023.4375,
+          "bandwidth_hz": 20947265.625,
+          "peak_psd_db_over_mean": 8.473444938659668,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 622558.59375,
+          "f_start_hz": -5004882.8125,
+          "f_end_hz": 6250000.0,
+          "bandwidth_hz": 11254882.8125,
+          "peak_psd_db_over_mean": 10.68978214263916,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 927734.375,
+          "f_start_hz": -9423828.125,
+          "f_end_hz": 11279296.875,
+          "bandwidth_hz": 20703125.0,
+          "peak_psd_db_over_mean": 8.554915428161621,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": 1062011.71875,
+          "f_start_hz": -9472656.25,
+          "f_end_hz": 11596679.6875,
+          "bandwidth_hz": 21069335.9375,
+          "peak_psd_db_over_mean": 8.847847938537598,
+          "label": "ocusync_video"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 33815764,
+      "bands": [
+        {
+          "f_center_hz": 2709960.9375,
+          "f_start_hz": -2563476.5625,
+          "f_end_hz": 7983398.4375,
+          "bandwidth_hz": 10546875.0,
+          "peak_psd_db_over_mean": 9.104517936706543,
+          "burst_count": 7,
+          "burst_rate_hz": 14.0,
+          "label": "lte_burst"
+        }
+      ]
+    }
+  ]
+}

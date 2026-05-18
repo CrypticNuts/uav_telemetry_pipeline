@@ -1,613 +1,413 @@
 # UAV Telemetry Pipeline
 
-**Passive Analysis and Decoding of UAV Radio Links for Telemetry Recovery and Counter-Drone Applications**
+Passive, offline pipeline for recovering DJI DroneID telemetry from raw IQ
+captures. Wraps the RUB-SysSec/DroneSecurity decoder, the proto17 Octave
+toolkit, and an in-process Python decoder behind a single command-line
+runner with a clean JSON output format.
 
-A modular Python pipeline that processes recorded IQ radio captures to detect, decode, and extract structured DJI DroneID telemetry — including drone serial number, GPS coordinates, altitude, speed, heading, and pilot position.
-
-Built as a final-year cybersecurity project (PFE).
-
----
-
-## Problem Statement
-
-Commercial drones broadcast identification and telemetry data via the DJI DroneID protocol embedded within their OcuSync 2.0 radio link. This broadcast is mandated for Remote ID compliance but is transmitted over the air in a format that requires specialized signal processing to recover.
-
-This project provides an **offline, passive, receive-only** pipeline that takes raw IQ radio captures (recorded with an SDR) and extracts structured telemetry without any interaction with the drone or its controller.
-
-## Goals
-
-- Load and classify IQ captures from various SDR formats
-- Detect DroneID signal bursts within wideband captures
-- Integrate with existing reference decoders (no reimplementation of OFDM/PHY-layer math)
-- Parse decoder output into clean, structured Python objects
-- Produce JSON/CSV reports suitable for analysis and academic evaluation
+Built as a final-year cybersecurity engineering project (PFE).
 
 ---
 
-## Features
+## Quick start
 
-| Stage | Module | Description | Status |
-|-------|--------|-------------|--------|
-| 1. Load IQ | `preprocessor/` | Load `.fc32`, `.cs8`, `.cs16`, `.npy` (Case A) or CSV (Case B) | Complete |
-| 2. Burst Detection | `detection/burst_detector.py` | STFT-based energy detection with adaptive noise floor | Complete |
-| 3. ZC Correlation | `detection/zc_correlator.py` | Zadoff-Chu reference generation | Partial (generation only) |
-| 4. Decode | `decoding/` | Subprocess adapter for external decoders (DroneSecurity) | Complete |
-| 5. Parse | `telemetry/` | Stdout JSON extraction into `DroneIDFrame` objects | Complete |
-| Evaluate | `evaluate.py` | Aggregate metrics, terminal/JSON/CSV reports | Complete |
+The pipeline expects the DroneSecurity repository to exist at
+`~/projects/PFE/DroneSecurity` with its venv populated. Override with
+`$DRONESECURITY_PATH` or `config.yaml` if needed.
 
----
+```bash
+# Activate the DroneSecurity venv (provides distutils shim for Python 3.12+)
+source ~/projects/PFE/DroneSecurity/.venv/bin/activate
 
-## Architecture
+# End-to-end run on the reference sample
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    --input ~/projects/PFE/DroneSecurity/samples/mini2_sm \
+    --sample-rate 50e6
 
-```
-                         ┌──────────────────────────────────────────┐
-                         │              pipeline.py                 │
-                         │         (CLI orchestrator)               │
-                         └──────┬───────┬───────┬───────┬──────────┘
-                                │       │       │       │
-                     Stage 1    │  St.2 │  St.3 │  St.4 │  Stage 5
-                                ▼       ▼       ▼       ▼
-IQ File (.fc32)  ──►  preprocessor/  detection/  decoding/  telemetry/
-  or CSV (.csv)       load_verified  burst_      reference_  droneid_
-                      _iq.py         detector.py decoder.py  parser.py
-                                │               │           │
-                                │               ▼           ▼
-                                │        ┌──────────┐  DroneIDFrame
-                                │        │DroneSec. │  (dataclass)
-                                │        │subprocess│       │
-                                │        └──────────┘       ▼
-                                │                      DecodeResult
-                                │                           │
-                                └───────────────────────────┘
-                                                            │
-                                              output.json ◄─┘
-                                                  │
-                                            evaluate.py
-                                                  │
-                                     ┌────────────┼────────────┐
-                                     ▼            ▼            ▼
-                                 terminal     summary.json  summary.csv
+# Diagnose-only (skip decoders, report ZC correlation peaks)
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    --input <capture.fc32> --sample-rate 50e6 --diagnose-only
+
+# Descriptive band analysis (no decoding, no ZC matching)
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    --input <capture.fc32> --sample-rate 50e6 --spectrum-only
 ```
 
-**Key design decisions:**
-
-- The pipeline does **not** reimplement OFDM demodulation or QPSK decoding. It wraps external reference decoders (primarily [RUB-SysSec/DroneSecurity](https://github.com/RUB-SysSec/DroneSecurity)) as subprocess calls.
-- Input data is classified at load time as **Case A** (verified, decodable) or **Case B** (exploratory, best-effort). Only Case A data is sent to the decoder.
-- All inter-stage communication uses typed Python dataclasses (`BurstSegment`, `DecodeResult`, `DroneIDFrame`).
-
----
-
-## Case A vs Case B Inputs
-
-| | Case A — Verified IQ | Case B — Exploratory |
-|---|---|---|
-| **Source** | SDR capture (USRP, HackRF, etc.) | CSV export (DroneDetect, DroneRF) |
-| **Format** | `.fc32`, `.cs8`, `.cs16`, `.npy` | `.csv` with I/Q columns |
-| **Sample rate** | Known (e.g., 50 MHz) | May be unknown |
-| **Decodable** | Yes | Not guaranteed |
-| **Pipeline behavior** | Full pipeline through decode | Load + detect only, decode skipped |
-
-> Case B data is **never silently treated as decodable**. The pipeline logs a warning and tags all outputs with the classification.
-
----
-
-## Repository Structure
+On a known-good capture (e.g. `mini2_sm` at 50 Msps) the runner produces:
 
 ```
-uav_telemetry_pipeline/
-├── pipeline.py              # Main CLI — runs the 5-stage pipeline
-├── evaluate.py              # Evaluation report generator
-├── requirements.txt         # Python dependencies
-├── .gitignore
-│
-├── preprocessor/            # Stage 1: IQ loading and format conversion
-│   ├── load_verified_iq.py  #   Case A: binary IQ formats → complex64
-│   └── csv_to_iq.py         #   Case B: CSV → complex64
-│
-├── detection/               # Stage 2–3: Signal detection
-│   ├── burst_detector.py    #   STFT energy detection + noise floor estimation
-│   └── zc_correlator.py     #   Zadoff-Chu reference sequence generation
-│
-├── decoding/                # Stage 4: External decoder integration
-│   ├── receiver_adapter.py  #   Abstract adapter interface (ABC)
-│   └── reference_decoder.py #   Subprocess wrapper for DroneSecurity et al.
-│
-├── telemetry/               # Stage 5: Telemetry parsing and data models
-│   ├── models.py            #   DroneIDFrame, DecodeResult, GPSCoordinate
-│   └── droneid_parser.py    #   Stdout JSON extraction → DroneIDFrame
-│
-├── data/
-│   ├── samples/             #   Input IQ captures (not committed to git)
-│   └── results/             #   Pipeline outputs (not committed to git)
-│
-└── tests/                   #   Unit tests (placeholder)
+============================================================
+  decoder used:  dronesecurity
+  frames:        9
+  CRC OK:        7
+  CRC pass rate: 77.8%
+  first fix:     lat=51.447176, lon=7.266528
+  results:       results/mini2_sm_telemetry.json
+============================================================
 ```
 
 ---
 
-## Quick Start
+## Pipeline architecture
 
-Minimal steps from clone to first successful decode:
-
-```bash
-# 1. Clone this repository
-git clone https://github.com/CrypticNuts/uav_telemetry_pipeline.git
-cd uav_telemetry_pipeline
-
-# 2. Install Python dependencies
-pip install -r requirements.txt
-
-# 3. Clone and patch the DroneSecurity decoder
-git clone https://github.com/RUB-SysSec/DroneSecurity.git ../DroneSecurity
-pip install bitarray crcmod setuptools
-
-# Apply compatibility patches for Python 3.12+ (see Troubleshooting)
-sed -i 's/np\.complex,/complex,/' ../DroneSecurity/src/qpsk.py
-sed -i 's/np\.complex(/complex(/' ../DroneSecurity/src/qpsk.py
-
-# 4. Place an IQ capture in data/samples/
-cp /path/to/your/capture.fc32 data/samples/
-
-# 5. Run the pipeline
-python3 pipeline.py \
-  -i data/samples/capture.fc32 \
-  --sample-rate 50e6 \
-  --center-freq 2.4e9 \
-  --decoder-path ../DroneSecurity \
-  -o data/results/output.json \
-  -v
-
-# 6. Generate evaluation report
-python3 evaluate.py data/results/output.json -o data/results/summary
+```
+┌─────────────────────────────────────────────────────────────┐
+│  run_pipeline.py                                            │
+│  CLI orchestrator: tries decoders in priority order until   │
+│  one returns ≥1 CRC-OK frame. Always writes a JSON result.  │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+┌──────────────┐ ┌─────────┐ ┌───────────┐    decoders/
+│DroneSecurity │ │ Proto17 │ │  Native   │    (BaseDecoder
+│  (primary)   │ │ (fallA) │ │ (fallB)   │     subclasses)
+└──────────────┘ └─────────┘ └───────────┘
+        │            │            │
+        └────────────┴────────────┘
+                     │
+                     ▼  (no decoder produced CRC OK)
+            ┌──────────────────┐
+            │ZadoffChuCorrelat.│    detection/zc_correlator.py
+            │ + spectrum bands │    (only via --diagnose / --spectrum)
+            └──────────────────┘
 ```
 
 ---
 
-## Installation
+## Decoders
 
-### Prerequisites
+All three implement the same `BaseDecoder` interface in
+`decoders/base.py`:
 
-- **Python 3.10+** (tested on 3.13)
-- **Linux** (tested on Kali 2024/WSL2 and Ubuntu 22.04)
-- **pip** for package management
-
-### Step 1: Install pipeline dependencies
-
-```bash
-pip install -r requirements.txt
+```python
+def decode(iq_file_path: str, sample_rate: float) -> list[TelemetryFrame]
 ```
 
-This installs: `numpy`, `scipy`, `pandas`, `matplotlib`.
+They return a list of `TelemetryFrame` (TypedDict) — empty on failure,
+never raising.
 
-### Step 2: Set up the DroneSecurity decoder
+### 1. `DroneSecurityDecoder` — primary
 
-The pipeline wraps [RUB-SysSec/DroneSecurity](https://github.com/RUB-SysSec/DroneSecurity) as its primary decoding backend. Clone it adjacent to the pipeline:
+- Invokes `DroneSecurity/src/droneid_receiver_offline.py` as a subprocess.
+- Always uses the **DroneSecurity venv interpreter**
+  (`.venv/bin/python`), never bare `python3`. `SpectrumCapture.py`
+  imports `distutils.log`, which Python 3.12 removed from stdlib; the
+  venv has `setuptools` installed which re-provides the shim.
+- Parses stdout for the `## Drone-ID Payload ##` JSON blocks emitted by
+  the receiver and maps them to the canonical `TelemetryFrame` shape.
+- Default subprocess timeout: 30 minutes (configurable via
+  `--decoder-timeout`).
 
-```bash
-git clone https://github.com/RUB-SysSec/DroneSecurity.git ../DroneSecurity
-```
+### 2. `Proto17Decoder` — fallback A (Octave)
 
-Install its additional dependencies:
+- Invokes `dji_droneid/matlab/find_zc.m` via the `octave` CLI on a
+  resampled (15.36 Msps) copy of the input.
+- The proto17 toolkit only finds ZC burst positions; it does **not**
+  decode payload, so this fallback emits one entry per detected burst
+  with `crc_ok=False` and `timestamp_sample=<idx>`. It is a signal-
+  presence proof, not a decoder.
+- Becomes unavailable (silently skipped) if the `octave` binary is not
+  on `$PATH`.
 
-```bash
-pip install bitarray crcmod setuptools
-```
+### 3. `NativeDecoder` — fallback B (in-process Python)
 
-> `setuptools` provides the `distutils` module removed in Python 3.12+. See [Troubleshooting](#troubleshooting).
+- Imports `SpectrumCapture` / `Packet` / `qpsk.Decoder` /
+  `DroneIDPacket` from DroneSecurity and drives them in-process. No
+  subprocess.
+- Same decode chain as the primary, but useful when the subprocess path
+  is broken (venv missing, distutils shim unavailable).
+- Same `TelemetryFrame` mapping as `DroneSecurityDecoder`.
 
-### Step 3: Apply compatibility patches
+### Fallback ordering
 
-DroneSecurity was written for Python 3.9 / NumPy 1.22. Two changes are needed for modern environments:
-
-```bash
-# Fix np.complex removal (NumPy 1.24+)
-sed -i 's/np\.complex,/complex,/' ../DroneSecurity/src/qpsk.py
-sed -i 's/np\.complex(/complex(/' ../DroneSecurity/src/qpsk.py
-```
-
-Verify the decoder works standalone:
-
-```bash
-cd ../DroneSecurity/src
-python3 droneid_receiver_offline.py -i ../../uav_telemetry_pipeline/data/samples/mavic_air_2 -s 50e6
-```
-
-You should see `## Drone-ID Payload ##` followed by a JSON block with coordinates.
+The runner tries decoders in the order listed above and **stops at the
+first decoder that returns at least one CRC-OK frame**. If a decoder
+returns frames but none with `crc_ok=True`, it logs `no_crc_ok` and
+moves on to the next one.
 
 ---
 
-## Usage
+## CLI reference
 
-### Running the pipeline
+```
+run_pipeline.py --input <FILE> --sample-rate <Hz> [options]
 
-**Basic usage with a verified IQ capture:**
+  --input, -i              IQ capture (interleaved float32)        [required]
+  --sample-rate, -s        Capture sample rate in Hz                [required]
+  --legacy                 Treat as Mavic Pro / Mavic 2 (legacy CP layout)
+  --output, -o             Output JSON path (default: results/<stem>_telemetry.json)
+  --decoder-timeout        Per-decoder subprocess timeout, seconds (default 1800)
+
+  --diagnose               If all decoders fail, run ZC correlator diagnostic
+  --diagnose-only          Skip decoders, only run ZC correlator
+  --spectrum-only          Skip decoders, run Welch band analysis
+  --diagnose-chunk-seconds Diagnostic window in seconds (default 1.5)
+  --diagnose-threshold     ZC correlation threshold (default 0.15)
+
+  -v, --verbose            Enable DEBUG logging
+```
+
+### Recommended flags for large captures (multi-GB)
 
 ```bash
-python3 pipeline.py \
-  -i data/samples/capture.fc32 \
-  --sample-rate 50e6 \
-  --center-freq 2.4e9 \
-  --decoder-path ../DroneSecurity \
-  -o data/results/output.json \
-  -v
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+PYTHONUNBUFFERED=1 python -u uav_telemetry_pipeline/run_pipeline.py ...
 ```
 
-**Extensionless file (e.g., DroneSecurity samples):**
+Single-threaded scipy/numpy avoids WSL2 thread-thrash; unbuffered Python
+lets you `tail -f` the log during long runs.
 
-```bash
-python3 pipeline.py \
-  -i data/samples/mavic_air_2 \
-  --fmt fc32 \
-  --sample-rate 50e6 \
-  --center-freq 2.4e9 \
-  --decoder-path ../DroneSecurity \
-  -o data/results/output.json \
-  -v
-```
+---
 
-**With explicit decoder script and extra arguments:**
+## Configuration
 
-```bash
-python3 pipeline.py \
-  -i data/samples/capture.fc32 \
-  --decoder-path ../DroneSecurity \
-  --decoder-backend src/droneid_receiver_offline.py \
-  --decoder-args "-d" \
-  --decoder-timeout 120 \
-  -o data/results/output.json \
-  -v
-```
+Resolution order (highest priority first):
 
-**CSV input (Case B — exploratory):**
+1. CLI flag, e.g. an explicit path argument
+2. Environment variable: `$DRONESECURITY_PATH`, `$PROTO17_PATH`,
+   `$PIPELINE_RESULTS_DIR`
+3. `uav_telemetry_pipeline/config.yaml` (optional, key
+   `dronesecurity_path` / `proto17_path` / `results_dir`)
+4. Defaults under `~/projects/PFE/`
 
-```bash
-python3 pipeline.py \
-  -i data/samples/dronerf_export.csv \
-  --csv-mode \
-  -o data/results/output.json \
-  -v
-```
+Example `config.yaml`:
 
-> Case B runs stages 1–2 only. The decoder is not invoked.
-
-**Keep temp files for debugging:**
-
-```bash
-python3 pipeline.py \
-  -i data/samples/mavic_air_2 \
-  --fmt fc32 \
-  --decoder-path ../DroneSecurity \
-  --keep-temp \
-  -o data/results/output.json \
-  -v
-```
-
-The exported burst `.fc32` file will be kept in `/tmp/burst*_*/` so you can run the decoder on it manually.
-
-### CLI reference
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `-i, --input` | Input file path (required) | — |
-| `--fmt` | Explicit IQ format (`fc32`, `sc16`, `sc8`) | inferred from extension |
-| `--csv-mode` | Treat input as CSV (Case B) | `false` |
-| `--sample-rate` | Sample rate in Hz | `50e6` |
-| `--center-freq` | Center frequency in Hz | `2.4e9` |
-| `--decoder-path` | Path to decoder repository root | — |
-| `--decoder-backend` | Explicit decoder script path | auto-discovered |
-| `--decoder-args` | Extra args passed to the decoder | `""` |
-| `--decoder-timeout` | Subprocess timeout (seconds) | `60` |
-| `--keep-temp` | Keep temp burst files | `false` |
-| `-o, --output` | Output JSON path | — |
-| `-v, --verbose` | Debug logging | `false` |
-
-### Running the evaluation report
-
-```bash
-# Single file
-python3 evaluate.py data/results/output.json
-
-# Multiple files with export
-python3 evaluate.py data/results/*.json -o data/results/summary
-
-# JSON only
-python3 evaluate.py data/results/*.json --format json -o data/results/summary
-
-# CSV only (for spreadsheet import)
-python3 evaluate.py data/results/*.json --format csv -o data/results/summary
-```
-
-**Terminal output example:**
-
-```
-==========================================================================================
-  UAV Telemetry Pipeline — Evaluation Report
-==========================================================================================
-
-File                        Case        Bursts Attempts Success Frames CRC OK Coords Avg Time
------------------------------------------------------------------------------------------------
-mavic_full_parse.json       verified_iq 1      1        1       1      1      1      3.84s
------------------------------------------------------------------------------------------------
-TOTAL                       verified_iq 1      1        1       1      1      1      3.84s
-
-  Decode success rate:  1/1 (100.0%)
-  Frames per success:   1.0
-  CRC-valid frames:     1/1 (100.0%)
-  Plausible coords:     1/1 (100.0%)
-  Total decode time:    3.84s
-  Unique serials:       1WNBH3900201N1
-  Device types:         DJI Mavic Air 2
-
-==========================================================================================
-```
-
-### Batch processing
-
-Process multiple samples and generate a combined report:
-
-```bash
-for sample in data/samples/*; do
-    [ -f "$sample" ] || continue
-    name=$(basename "$sample")
-    python3 pipeline.py \
-      -i "$sample" \
-      --fmt fc32 \
-      --sample-rate 50e6 \
-      --center-freq 2.4e9 \
-      --decoder-path ../DroneSecurity \
-      -o "data/results/${name}.json" \
-      -v
-done
-
-python3 evaluate.py data/results/*.json -o data/results/evaluation
+```yaml
+dronesecurity_path: /opt/DroneSecurity
+proto17_path: /opt/dji_droneid
+results_dir: /var/lib/uav-telemetry/results
 ```
 
 ---
 
-## Output Format
-
-The pipeline produces a JSON array with one entry per detected burst:
+## Output JSON
 
 ```json
-[
-  {
-    "burst_index": 0,
-    "backend": "droneid_receiver_offline.py",
-    "success": true,
-    "exit_code": 0,
-    "duration_s": 3.837,
-    "command": "python3 .../droneid_receiver_offline.py -i /tmp/.../burst_0.fc32 -s 50000000.0",
-    "error_message": "",
-    "num_frames": 1,
-    "frames": [
-      {
-        "serial_number": "1WNBH3900201N1",
-        "manufacturer": "DJI Mavic Air 2",
-        "classification": "verified_iq",
-        "decode_confidence": 1.0,
-        "drone_lat": 51.4463,
-        "drone_lon": 7.2672,
-        "drone_alt": 42.97,
-        "pilot_lat": 51.4462,
-        "pilot_lon": 7.2671,
-        "home_lat": 51.4463,
-        "home_lon": 7.2674,
-        "speed_horizontal_ms": 2.83,
-        "speed_vertical_ms": 26.0,
-        "heading_deg": 25.0,
-        "height_agl_m": 12.8,
-        "timestamp": "2022-04-21T11:53:46.258000+00:00"
-      }
-    ]
-  }
+{
+  "input": "<path>",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": "dronesecurity",        // null if all failed
+  "frames_decoded": 9,
+  "crc_ok_frames": 7,
+  "crc_pass_rate": 0.778,
+  "first_gps_fix": {"lat": 51.447, "lon": 7.266},  // null if none
+  "attempts": [                            // per-decoder log
+    {"decoder": "dronesecurity", "status": "ran",
+     "frames": 9, "crc_ok": 7}
+  ],
+  "diagnostic": null,                      // present only with --diagnose
+  "frames": [
+    {
+      "lat": 0.0,                          // drone latitude (0.0 = no GPS lock)
+      "lon": 0.0,
+      "altitude_m": 0.0,
+      "height_m": 0.0,
+      "vel_north": 0.0,                    // raw drone units (decimeters/s)
+      "vel_east": 0.0,
+      "vel_up": 0.0,
+      "yaw": 9575,                         // raw drone heading
+      "serial": "SysSecWasHere",
+      "device_type": "Mini 2",
+      "app_lat": 51.447176178716916,       // pilot phone/app GPS
+      "app_lon": 7.266528392911369,
+      "home_lat": 0.0,
+      "home_lon": 0.0,
+      "sequence_number": 786,
+      "gps_time_ms": 1648558221652,
+      "crc_ok": true,
+      "decoder": "dronesecurity",
+      "timestamp_sample": -1               // sample index, -1 if unknown
+    }
+  ]
+}
+```
+
+### Field semantics
+
+- `lat / lon = 0.0` means the drone had no GPS lock at broadcast time
+  (still-on-ground, indoors, etc.). The pilot (`app_lat / app_lon`)
+  may still be valid in this case.
+- `crc_ok` is the only authoritative validity flag. Frames with
+  `crc_ok=false` are *kept* in the output (useful for debugging) but
+  don't count toward `crc_ok_frames` or `first_gps_fix`.
+- `timestamp_sample = -1` indicates the decoder didn't pin the frame
+  to a specific sample offset. The `NativeDecoder` reports the chunk
+  start; `DroneSecurityDecoder` leaves it at -1 because the receiver
+  doesn't emit per-frame offsets.
+
+### `--diagnose-only` output
+
+```json
+"diagnostic": {
+  "file_seconds": 4.841,
+  "threshold": 0.15,
+  "best_score": 0.141,
+  "best_sample_index": 148111420,
+  "peaks_above_threshold": 0,
+  "decim_q": 3,
+  "burst_min_spacing_samples": 28944,
+  "top_peaks": [...],                      // up to 20, sorted by score
+  "chunks": [                              // per-chunk breakdown
+    {"sample_start": 0, "samples": 50000000,
+     "cfo_mhz": 0.0, "best_score": 0.135,
+     "best_sample_index": 2732205,
+     "peaks_above_threshold": 0}
+  ]
+}
+```
+
+### `--spectrum-only` output
+
+```json
+"spectrum": [
+  {"sample_start": 0, "samples": 75000000,
+   "bands": [
+     {"f_center_hz": 280761.7,
+      "f_start_hz": -10742187.5, "f_end_hz": 11303710.9,
+      "bandwidth_hz": 22045898.4,
+      "peak_psd_db_over_mean": 4.57,
+      "label": "ocusync_video"}
+   ]}
 ]
 ```
 
-| Field | Description |
-|-------|-------------|
-| `serial_number` | DJI drone serial number |
-| `manufacturer` | Device type (e.g., "DJI Mavic Air 2") |
-| `decode_confidence` | 1.0 if CRC matches, 0.5 if CRC mismatch |
-| `drone_lat/lon/alt` | Drone GPS position (WGS84) |
-| `pilot_lat/lon` | Pilot/controller app position |
-| `home_lat/lon` | Home point position |
-| `speed_horizontal_ms` | Horizontal speed in m/s |
-| `speed_vertical_ms` | Vertical speed in m/s |
-| `heading_deg` | Heading in degrees (0–360) |
-| `height_agl_m` | Height above ground level in meters |
-| `timestamp` | GPS timestamp (UTC ISO 8601) |
+Heuristic labels emitted by `analyze_spectrum_bands`:
+
+| Label | Bandwidth range | Notes |
+|---|---|---|
+| `c2_control` | 0.8 – 1.95 MHz | DJI command/control narrowband |
+| `droneid` | 8 – 11 MHz, burst rate ≤ 5 Hz | LTE-derived DroneID broadcast (~1.7 Hz spec) |
+| `lte_burst` | 8 – 11 MHz, burst rate > 5 Hz | LTE-shaped emission with the right width but the wrong rate — e.g. OcuSync sub-frame bursts. Looks like DroneID by spectrum alone but isn't. |
+| `ocusync_video` | 17 – 25 MHz | OcuSync 2.0 video |
+| `unknown` | anything else > 1 MHz | descriptive only |
+
+The 8–11 MHz band defaults to `droneid` and is only demoted to `lte_burst`
+when a per-band burst-rate detector actively measures a high (>5 Hz)
+inter-burst rate. Zero-burst detector results stay `droneid`: real
+DroneID at high duty cycle (e.g. curated multi-packet extracts) can
+defeat the detector, so the conservative label is preferred over a
+false negative.
 
 ---
 
-## Using Your Own Data
+## ZC correlator internals
 
+`detection/zc_correlator.py` provides `ZadoffChuCorrelator` — the
+matched filter used by `--diagnose`.
 
-To use this pipeline with new IQ captures:
+- **Reference:** root 147 (the deterministic fine-sync ZC root in every
+  DroneID burst), seq length 601, IFFT'd to a time-domain waveform.
+- **CFO correction:** Welch PSD band-search (mirrors
+  DroneSecurity.helpers.estimate_offset). If a band of width 8–11 MHz is
+  found above mean PSD, its center is removed via a complex rotator.
+- **Decimation:** when the capture sample rate is much higher than the
+  LTE base rate (15.36 Msps), the correlator decimates internally
+  (polyphase, FIR-anti-aliased) so the matched filter operates on a
+  smaller signal. At 50 Msps the correlator decimates by 3 → 16.67
+  Msps, a ~10× speedup with no detectable quality loss.
+- **Matched filter:** overlap-add convolution against the time-reversed
+  conjugate reference, normalized by a sliding power envelope so
+  scores land in [0, ~1].
+- **Peaks:** `scipy.signal.find_peaks` with `height = threshold` and
+  `distance = 0.9 × burst_length`.
 
-1. **Record an IQ capture** at the DroneID frequency (around 2.4 GHz) using an SDR such as a USRP, HackRF, or RTL-SDR at **50 MSPS** or higher.
-
-2. **Save the capture** in one of the supported formats:
-   - `.fc32` — interleaved float32 I/Q (most common, default for GNU Radio)
-   - `.cs16` — interleaved signed int16 I/Q
-   - `.cs8` — interleaved signed int8 I/Q
-   - `.npy` — NumPy complex64 array
-
-3. **Place the file** in `data/samples/`.
-
-4. **Run the pipeline:**
-   ```bash
-   python3 pipeline.py \
-     -i data/samples/your_capture.fc32 \
-     --sample-rate <your_sample_rate> \
-     --center-freq <your_center_freq> \
-     --decoder-path ../DroneSecurity \
-     -o data/results/your_capture.json \
-     -v
-   ```
-
-5. **Check the output** in `data/results/your_capture.json`. The `frames` array contains decoded telemetry. If `frames` is empty, check:
-   - Is the sample rate correct?
-   - Does the capture contain a DroneID signal? (Check the burst detection log)
-   - Did the decoder produce output? (Check `stdout` and `stderr` in the JSON)
-
-### If your file has no extension
-
-Use `--fmt` to specify the format explicitly:
-
-```bash
-python3 pipeline.py -i data/samples/my_capture --fmt fc32 --sample-rate 50e6 ...
-```
-
-### If using a different sample rate
-
-DroneSecurity expects 50 MSPS captures. If your SDR records at a different rate, specify it:
-
-```bash
-python3 pipeline.py -i data/samples/capture.fc32 --sample-rate 30.72e6 ...
-```
-
-> Note: The DroneSecurity decoder may not decode correctly at sample rates other than 50 MSPS. The burst detector itself works at any sample rate.
+Calibration: on `mini2_sm`, the correlator returns all 10 ground-truth
+bursts at any threshold from 0.05 up to 0.30 (best peak score 0.78).
+The default threshold of 0.15 was selected as a safety margin.
 
 ---
 
-## Reproducibility
+## Three-regime interpretation
 
-Exact steps to reproduce the successful decode verified during development:
+The runner is designed to differentiate three regimes cleanly:
 
-```bash
-# Environment
-# Python 3.13.12, Kali Linux (WSL2), April 2026
+| Capture | OcuSync band | DroneID 8–11 MHz band | Best ZC score | Runner outcome |
+|---|---|---|---|---|
+| `DroneSecurity/samples/mini2_sm` (reference extract) | n/a | yes (CFO ≈ +9.6 MHz) | **0.78** | 9 frames, 7 CRC OK |
+| `Recording 3.0 / mini2` (4.8 s field) | 19 MHz | **no** | 0.14 | 0 frames, diagnostic only |
+| `Recording 3.0 / phantom` (3.7 s field) | 22 MHz | **no** | 0.14 | 0 frames, diagnostic only |
 
-# 1. Install dependencies
-pip install numpy scipy pandas matplotlib bitarray crcmod setuptools
+- The **reference extract** is a curated ZC-aligned slice → clean
+  decode, multiple CRC-OK frames, drone serial recovered.
+- The **field captures** contain active drone RF (OcuSync video clearly
+  present at +4 dB PSD) but no DroneID-shaped band anywhere in the
+  3.7–4.8 s span. ZC scores stay at the noise floor (~0.13–0.14, below
+  the 0.15 threshold).
 
-# 2. Clone decoder and apply patches
-git clone https://github.com/RUB-SysSec/DroneSecurity.git ../DroneSecurity
-sed -i 's/np\.complex,/complex,/' ../DroneSecurity/src/qpsk.py
-sed -i 's/np\.complex(/complex(/' ../DroneSecurity/src/qpsk.py
-
-# 3. Obtain the mavic_air_2 sample from DroneSecurity
-cp ../DroneSecurity/samples/mavic_air_2 data/samples/
-
-# 4. Run the pipeline
-python3 pipeline.py \
-  -i data/samples/mavic_air_2 \
-  --fmt fc32 \
-  --sample-rate 50e6 \
-  --center-freq 2.4e9 \
-  --decoder-path ../DroneSecurity \
-  -o data/results/mavic_full_parse.json \
-  -v
-
-# Expected output:
-#   Stage 2: 1 burst detected (samples 93184–225280, 2.64 ms, SNR 17.8 dB)
-#   Stage 4: exit_code=0, CRC OK
-#   Stage 5: 1 frame decoded
-#     Serial: 1WNBH3900201N1
-#     Model:  DJI Mavic Air 2
-#     Drone:  51.4463°N, 7.2672°E, 42.97m
-#     Pilot:  51.4462°N, 7.2671°E
-#     Time:   2022-04-21T11:53:46 UTC
-
-# 5. Generate evaluation report
-python3 evaluate.py data/results/mavic_full_parse.json -o data/results/summary
-```
+In the mini2 field capture, video drops out at t≈3.7 s and two narrow
+auxiliary bands appear at -11.3 MHz (~4 MHz wide, +8–11 dB) and
+-17.9 MHz (~3.8 MHz wide, +4–7 dB). These are continuous (not bursty),
+appear simultaneously with video drop-out, and are too wide for DJI C2
+and too narrow for DroneID — most likely DJI's OcuSync auxiliary
+downlink (residual telemetry/control after the main video link
+degrades). They are recorded in `results/band_probe.json` but are not
+DroneID and are not decoded here.
 
 ---
 
-## Troubleshooting
+## Layout
 
-### `ModuleNotFoundError: No module named 'distutils'`
-
-**Cause:** Python 3.12+ removed the `distutils` module. DroneSecurity's `SpectrumCapture.py` imports it.
-
-**Fix:**
-```bash
-pip install setuptools
+```
+uav_telemetry_pipeline/
+├── run_pipeline.py        ← CLI entry point (use this)
+├── config.py              ← path/env resolution
+├── decoders/
+│   ├── base.py            ← BaseDecoder + TelemetryFrame
+│   ├── dronesecurity.py   ← primary subprocess decoder
+│   ├── proto17.py         ← Octave fallback
+│   └── native.py          ← in-process Python decoder
+├── detection/
+│   ├── zc_correlator.py   ← matched filter + spectrum analysis
+│   └── burst_detector.py  ← STFT-based energy detection (legacy)
+├── preprocessor/          ← IQ file loaders
+├── telemetry/             ← (legacy) stdout parser + dataclasses
+├── pipeline.py            ← (legacy) prior CLI; superseded by run_pipeline.py
+├── results/               ← JSON outputs land here
+└── data/samples/          ← capture files
 ```
 
-### `AttributeError: module 'numpy' has no attribute 'complex'`
-
-**Cause:** NumPy 1.24+ removed the deprecated `np.complex` alias. DroneSecurity's `qpsk.py` uses it.
-
-**Fix:**
-```bash
-sed -i 's/np\.complex,/complex,/' ../DroneSecurity/src/qpsk.py
-sed -i 's/np\.complex(/complex(/' ../DroneSecurity/src/qpsk.py
-```
-
-### `Detected 0 burst(s)` on a file that should contain a signal
-
-The burst detector uses a histogram-based noise floor estimator. If the signal occupies most of the capture, try lowering the threshold:
-
-```bash
-# In your Python code or by editing BurstDetector defaults:
-detector = BurstDetector(threshold_db=6.0, nperseg=256, overlap_frac=0.75)
-```
-
-### `Unsupported format ''` for extensionless files
-
-Use `--fmt` to specify the format:
-```bash
-python3 pipeline.py -i data/samples/my_file --fmt fc32 ...
-```
-
-### Decoder exits with code 1 but no useful stderr
-
-Run the decoder standalone to isolate the issue:
-```bash
-cd ../DroneSecurity/src
-python3 droneid_receiver_offline.py -i /path/to/burst.fc32 -s 50e6 -d
-```
-
-The `-d` flag enables DroneSecurity's debug output.
-
-### `frames: []` despite `success: true`
-
-The decoder ran successfully but either:
-- No DroneID payload was found in the signal (common for frame 1 of 2 in the DroneSecurity output — this is expected)
-- The stdout parser didn't find a `## Drone-ID Payload ##` marker
-
-Check the `stdout` field in the output JSON for the raw decoder output.
+`pipeline.py` and the modules under `telemetry/` predate this work and
+are kept for the burst-detector / stdout-parser experiments documented
+in the project notes. New work should target `run_pipeline.py` and the
+`decoders/` package.
 
 ---
 
-## Limitations
+## Requirements
 
-- **Verified IQ only for decoding.** Only Case A inputs (known sample rate, center frequency, and sufficient bandwidth) produce reliable decode results. Case B (CSV/exploratory) data is loaded and detected but not decoded.
-- **External decoder dependency.** The OFDM demodulation and QPSK decoding are performed by the [DroneSecurity](https://github.com/RUB-SysSec/DroneSecurity) reference implementation. This pipeline does not contain its own PHY-layer decoder.
-- **50 MSPS expected.** The DroneSecurity decoder expects captures at 50 MSPS. Other sample rates may cause decode failures.
-- **DJI protocol only.** This pipeline targets the DJI DroneID protocol. Other manufacturers' Remote ID implementations are not supported.
-- **Proprietary protocol.** DJI DroneID field semantics are based on reverse-engineering research. Some fields (e.g., `d_1_angle`, `state_info`) may not be fully documented.
-- **Passive and offline only.** No real-time processing, no transmission, no active interaction with drones.
-- **ZC correlation not yet integrated.** The Zadoff-Chu correlator generates the reference sequence but the cross-correlation and frame-start detection are not yet implemented. Burst detection relies on STFT energy alone.
+```
+numpy>=1.24, scipy>=1.10, pandas>=2.0
+pyyaml>=6.0           # optional, for config.yaml
+matplotlib>=3.7       # debug plots
+bitarray>=2.4, crcmod>=1.7, setuptools>=70.0    # for NativeDecoder
+```
 
----
-
-## Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `numpy` | >= 1.24 | Array operations, IQ data handling |
-| `scipy` | >= 1.10 | STFT computation for burst detection |
-| `pandas` | >= 2.0 | CSV input loading (Case B) |
-| `matplotlib` | >= 3.7 | Debug plots for burst detection |
-| `bitarray` | >= 2.4 | Required by DroneSecurity decoder |
-| `crcmod` | >= 1.7 | Required by DroneSecurity decoder |
-| `setuptools` | any | Provides `distutils` on Python 3.12+ |
+Octave (`/usr/bin/octave`) is optional — Proto17Decoder skips itself
+silently if absent.
 
 ---
 
-## References
+## Reproducing the validation results
 
-- Schiller, M. et al. — *"Drone Security and the Mystery of DJI's DroneID"* (RUB-SysSec), USENIX Security 2023
-- [RUB-SysSec/DroneSecurity](https://github.com/RUB-SysSec/DroneSecurity) — Reference decoder implementation
-- ASTM F3411 — Standard Specification for Remote ID and Tracking
-- 3GPP TS 36.211 — Zadoff-Chu sequence definitions
-- [anarkiwi/samples2djidroneid](https://github.com/anarkiwi/samples2djidroneid) — Alternative decoder reference
+```bash
+source ~/projects/PFE/DroneSecurity/.venv/bin/activate
 
----
+# Validation Step 1 — DroneSecurity directly on the reference
+python ~/projects/PFE/DroneSecurity/src/droneid_receiver_offline.py \
+    -i ~/projects/PFE/DroneSecurity/samples/mini2_sm -s 50e6
 
-## License
+# Validation Step 2 — full pipeline on the reference
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    -i ~/projects/PFE/DroneSecurity/samples/mini2_sm -s 50e6
 
-This project is developed as an academic PFE (Projet de Fin d'Etudes).
+# Validation Step 3 — diagnose on a field capture
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    -i "data/samples/Recording 3.0/x310_rawIQ_2435MHz_50Msps_continuous_corne_phantom.fc32" \
+    -s 50e6 --diagnose-only
+
+# Validation Step 4 — descriptive spectrum of a field capture
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    -i "data/samples/Recording 3.0/x310_rawIQ_2435MHz_50Msps_continuous_corne_phantom.fc32" \
+    -s 50e6 --spectrum-only
+```

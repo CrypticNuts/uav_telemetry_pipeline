@@ -3,10 +3,14 @@ numpy>=1.24
 scipy>=1.10
 pandas>=2.0
 
-# Visualization (burst detection debug plots)
+# Config file support (optional)
+pyyaml>=6.0
+
+# Visualization (burst-detection debug plots)
 matplotlib>=3.7
 
-# Required by DroneSecurity decoder (install if using that backend)
-# bitarray>=2.4
-# crcmod>=1.7
-# setuptools    # provides distutils on Python 3.12+
+# Required by DroneSecurity decoder (installed in DroneSecurity/.venv,
+# listed here for the NativeDecoder path which imports them in-process)
+bitarray>=2.4
+crcmod>=1.7
+setuptools>=70.0  # provides the distutils.log shim on Python 3.12+

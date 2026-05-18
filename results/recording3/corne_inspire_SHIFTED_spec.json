@@ -1,0 +1,105 @@
+{
+  "input": "/tmp/uav_pipeline_x310_rawIQ_2435MHz_50Msps_continuous_corne_inspire_shifted_-16600kHz.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -12207.03125,
+          "f_start_hz": -6811523.4375,
+          "f_end_hz": 6787109.375,
+          "bandwidth_hz": 13598632.8125,
+          "peak_psd_db_over_mean": 9.779783248901367,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -134277.34375,
+          "f_start_hz": -7080078.125,
+          "f_end_hz": 6811523.4375,
+          "bandwidth_hz": 13891601.5625,
+          "peak_psd_db_over_mean": 13.031280517578125,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -24414.0625,
+          "f_start_hz": -6982421.875,
+          "f_end_hz": 6933593.75,
+          "bandwidth_hz": 13916015.625,
+          "peak_psd_db_over_mean": 7.944076061248779,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -24414.0625,
+          "f_start_hz": -6982421.875,
+          "f_end_hz": 6933593.75,
+          "bandwidth_hz": 13916015.625,
+          "peak_psd_db_over_mean": 8.264599800109863,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -12207.03125,
+          "f_start_hz": -6958007.8125,
+          "f_end_hz": 6933593.75,
+          "bandwidth_hz": 13891601.5625,
+          "peak_psd_db_over_mean": 7.9611358642578125,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 250000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -24414.0625,
+          "f_start_hz": -6982421.875,
+          "f_end_hz": 6933593.75,
+          "bandwidth_hz": 13916015.625,
+          "peak_psd_db_over_mean": 8.201045989990234,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 300000000,
+      "samples": 22627774,
+      "bands": [
+        {
+          "f_center_hz": -12207.03125,
+          "f_start_hz": -6958007.8125,
+          "f_end_hz": 6933593.75,
+          "bandwidth_hz": 13891601.5625,
+          "peak_psd_db_over_mean": 8.35063648223877,
+          "label": "unknown"
+        }
+      ]
+    }
+  ]
+}

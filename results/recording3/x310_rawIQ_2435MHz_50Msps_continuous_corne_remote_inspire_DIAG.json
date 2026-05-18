@@ -1,0 +1,72 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/x310_rawIQ_2435MHz_50Msps_continuous_corne_remote_inspire.fc32",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [],
+  "diagnostic": {
+    "file_seconds": 5.214,
+    "samples_analyzed": 260684756,
+    "threshold": 0.15,
+    "best_score": 0.149,
+    "best_sample_index": 112897870,
+    "burst_min_spacing_samples": 28944,
+    "decim_q": 3,
+    "peaks_above_threshold": 0,
+    "top_peaks": [],
+    "chunks": [
+      {
+        "sample_start": 0,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.149,
+        "best_sample_index": 1089796,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 50000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.148,
+        "best_sample_index": 64437168,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 100000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.149,
+        "best_sample_index": 104299290,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 150000000,
+        "samples": 50000000,
+        "cfo_mhz": -2.454,
+        "best_score": 0.14,
+        "best_sample_index": 157814292,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 200000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.145,
+        "best_sample_index": 200835053,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 250000000,
+        "samples": 10684756,
+        "cfo_mhz": 0.0,
+        "best_score": 0.139,
+        "best_sample_index": 253469623,
+        "peaks_above_threshold": 0
+      }
+    ]
+  },
+  "frames": []
+}

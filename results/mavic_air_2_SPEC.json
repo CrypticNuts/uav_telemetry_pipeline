@@ -1,0 +1,33 @@
+{
+  "input": "uav_telemetry_pipeline/data/samples/mavic_air_2",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 225280,
+      "bands": [
+        {
+          "f_center_hz": -12463378.90625,
+          "f_start_hz": -16967773.4375,
+          "f_end_hz": -7958984.375,
+          "bandwidth_hz": 9008789.0625,
+          "peak_psd_db_over_mean": 5.868417739868164,
+          "burst_count": 0,
+          "burst_rate_hz": 0.0,
+          "label": "droneid"
+        },
+        {
+          "f_center_hz": 2001953.125,
+          "f_start_hz": -2490234.375,
+          "f_end_hz": 6494140.625,
+          "bandwidth_hz": 8984375.0,
+          "peak_psd_db_over_mean": 5.241878032684326,
+          "burst_count": 0,
+          "burst_rate_hz": 0.0,
+          "label": "droneid"
+        }
+      ]
+    }
+  ]
+}

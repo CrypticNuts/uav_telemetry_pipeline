@@ -1,0 +1,80 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/matriceM30/x310_rawIQ_2435MHz_50Msps_continuous_corne_M30.fc32",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [],
+  "diagnostic": {
+    "file_seconds": 6.227,
+    "samples_analyzed": 311338119,
+    "threshold": 0.15,
+    "best_score": 0.139,
+    "best_sample_index": 38425407,
+    "burst_min_spacing_samples": 28944,
+    "decim_q": 3,
+    "peaks_above_threshold": 0,
+    "top_peaks": [],
+    "chunks": [
+      {
+        "sample_start": 0,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.139,
+        "best_sample_index": 12808469,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 50000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.128,
+        "best_sample_index": 57325740,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 100000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.132,
+        "best_sample_index": 116120055,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 150000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.13,
+        "best_sample_index": 159242701,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 200000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.135,
+        "best_sample_index": 205031127,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 250000000,
+        "samples": 50000000,
+        "cfo_mhz": 0.0,
+        "best_score": 0.13,
+        "best_sample_index": 251150131,
+        "peaks_above_threshold": 0
+      },
+      {
+        "sample_start": 300000000,
+        "samples": 11338119,
+        "cfo_mhz": 0.0,
+        "best_score": 0.121,
+        "best_sample_index": 300355292,
+        "peaks_above_threshold": 0
+      }
+    ]
+  },
+  "frames": []
+}

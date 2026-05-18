@@ -1,0 +1,31 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/mini_2_se/x310_rawIQ_5755MHz_50Msps_continuous_corne_mini2.fc32",
+  "sample_rate_hz": 50000000.0,
+  "decoder_used": null,
+  "frames_decoded": 0,
+  "crc_ok_frames": 0,
+  "crc_pass_rate": 0.0,
+  "first_gps_fix": null,
+  "attempts": [
+    {
+      "decoder": "dronesecurity",
+      "status": "ran",
+      "frames": 0,
+      "crc_ok": 0
+    },
+    {
+      "decoder": "proto17",
+      "status": "ran",
+      "frames": 0,
+      "crc_ok": 0
+    },
+    {
+      "decoder": "native",
+      "status": "ran",
+      "frames": 0,
+      "crc_ok": 0
+    }
+  ],
+  "diagnostic": null,
+  "frames": []
+}

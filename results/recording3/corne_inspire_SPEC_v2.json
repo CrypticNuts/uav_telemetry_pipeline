@@ -1,0 +1,125 @@
+{
+  "input": "/home/kali/projects/PFE/uav_telemetry_pipeline/data/samples/Recording 3.0/inspire2/x310_rawIQ_2435MHz_50Msps_continuous_corne_inspire.fc32",
+  "sample_rate_hz": 50000000.0,
+  "mode": "spectrum_only",
+  "spectrum": [
+    {
+      "sample_start": 0,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -16601562.5,
+          "f_start_hz": -21118164.0625,
+          "f_end_hz": -12084960.9375,
+          "bandwidth_hz": 9033203.125,
+          "peak_psd_db_over_mean": 7.33445930480957,
+          "burst_count": 6,
+          "burst_rate_hz": 12.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 50000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -6811523.4375,
+          "f_start_hz": -8959960.9375,
+          "f_end_hz": -4663085.9375,
+          "bandwidth_hz": 4296875.0,
+          "peak_psd_db_over_mean": 8.329036712646484,
+          "label": "unknown"
+        },
+        {
+          "f_center_hz": -15747070.3125,
+          "f_start_hz": -19311523.4375,
+          "f_end_hz": -12182617.1875,
+          "bandwidth_hz": 7128906.25,
+          "peak_psd_db_over_mean": 5.4210381507873535,
+          "label": "unknown"
+        }
+      ]
+    },
+    {
+      "sample_start": 100000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -16662597.65625,
+          "f_start_hz": -21215820.3125,
+          "f_end_hz": -12109375.0,
+          "bandwidth_hz": 9106445.3125,
+          "peak_psd_db_over_mean": 7.433809280395508,
+          "burst_count": 6,
+          "burst_rate_hz": 12.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 150000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -15319824.21875,
+          "f_start_hz": -20361328.125,
+          "f_end_hz": -10278320.3125,
+          "bandwidth_hz": 10083007.8125,
+          "peak_psd_db_over_mean": 8.373834609985352,
+          "burst_count": 7,
+          "burst_rate_hz": 14.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 200000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -16650390.625,
+          "f_start_hz": -21215820.3125,
+          "f_end_hz": -12084960.9375,
+          "bandwidth_hz": 9130859.375,
+          "peak_psd_db_over_mean": 7.356708526611328,
+          "burst_count": 4,
+          "burst_rate_hz": 8.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 250000000,
+      "samples": 50000000,
+      "bands": [
+        {
+          "f_center_hz": -17163085.9375,
+          "f_start_hz": -22216796.875,
+          "f_end_hz": -12109375.0,
+          "bandwidth_hz": 10107421.875,
+          "peak_psd_db_over_mean": 7.376847743988037,
+          "burst_count": 5,
+          "burst_rate_hz": 10.0,
+          "label": "lte_burst"
+        }
+      ]
+    },
+    {
+      "sample_start": 300000000,
+      "samples": 22627774,
+      "bands": [
+        {
+          "f_center_hz": -16577148.4375,
+          "f_start_hz": -21044921.875,
+          "f_end_hz": -12109375.0,
+          "bandwidth_hz": 8935546.875,
+          "peak_psd_db_over_mean": 7.277447700500488,
+          "burst_count": 6,
+          "burst_rate_hz": 13.26,
+          "label": "lte_burst"
+        }
+      ]
+    }
+  ]
+}

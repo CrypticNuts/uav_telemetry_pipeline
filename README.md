@@ -119,12 +119,23 @@ never raising.
   is broken (venv missing, distutils shim unavailable).
 - Same `TelemetryFrame` mapping as `DroneSecurityDecoder`.
 
+### 4. `MMSEDecoder` — opt-in variant of Native
+
+- Subclass of `NativeDecoder` that substitutes DroneSecurity's
+  LS / Zero-Forcing channel equalization for **MMSE / Wiener-shrinkage**
+  weights `W = conj(H_ls) / (|H_ls|² + σ²)`.
+- Activated via `--use-mmse`. Replaces `NativeDecoder` in the last slot
+  of the fallback chain.
+- See [Channel equalization](#channel-equalization-ls-vs-mmse) below.
+
 ### Fallback ordering
 
 The runner tries decoders in the order listed above and **stops at the
 first decoder that returns at least one CRC-OK frame**. If a decoder
 returns frames but none with `crc_ok=True`, it logs `no_crc_ok` and
-moves on to the next one.
+moves on to the next one. Proto17 is **disabled by default**
+(opt-in via `--enable-proto17`) because its Octave `find_zc.m` routinely
+times out.
 
 ---
 
@@ -144,6 +155,15 @@ run_pipeline.py --input <FILE> --sample-rate <Hz> [options]
   --spectrum-only          Skip decoders, run Welch band analysis
   --diagnose-chunk-seconds Diagnostic window in seconds (default 1.5)
   --diagnose-threshold     ZC correlation threshold (default 0.15)
+
+  --center-shift-hz        Pre-shift IQ by this carrier offset (Hz) before decode
+  --keep-bandwidth-hz      Bandpass bandwidth after shift (default 10 MHz)
+  --output-rate-hz         Decimate to this rate post-shift (default = input)
+  --keep-shifted-file      Don't delete the temp shifted .fc32 (debug)
+
+  --enable-proto17         Include Octave-based Proto17 in the chain (off by default)
+  --use-mmse               Swap NativeDecoder for MMSEDecoder (LS → MMSE equalizer)
+  --kalman                 Smooth decoded frames with a 6D constant-velocity Kalman
 
   -v, --verbose            Enable DEBUG logging
 ```
@@ -197,6 +217,12 @@ results_dir: /var/lib/uav-telemetry/results
      "frames": 9, "crc_ok": 7}
   ],
   "diagnostic": null,                      // present only with --diagnose
+  "smoothed_track": [...],                 // present only with --kalman
+  "track_metrics": {                       // present only with --kalman
+    "rmse_raw_m": 12.3, "rmse_smoothed_m": 1.4,
+    "smoothness_raw": 14.7, "smoothness_smoothed": 2.1,
+    "outliers_rejected": 2
+  },
   "frames": [
     {
       "lat": 0.0,                          // drone latitude (0.0 = no GPS lock)
@@ -346,21 +372,136 @@ DroneID and are not decoded here.
 
 ---
 
+## Channel equalization (LS vs MMSE)
+
+DroneSecurity's `Packet.estimate_channel` uses **Least-Squares /
+Zero-Forcing**: `H_ls = Y / X` then `X_est = Y / H_ls`. This is unbiased
+but amplifies noise on subcarriers where the true channel response is
+small (frequency-selective nulls). `decoders/mmse_equalizer.py` adds an
+MMSE alternative:
+
+```
+W_mmse = conj(H_ls) / (|H_ls|² + σ²)
+X_est  = W_mmse · Y                      (multiplicative, not divisive)
+```
+
+Noise variance `σ²` is estimated from the LS residual against a smoothed
+channel; a guard-bin estimator (`estimate_noise_var`) is also available
+for callers that retain the full 1024-bin FFT. `MMSEDecoder` replaces
+`packet.channel` with `1 / W_mmse` so DroneSecurity's
+`Y / packet.channel` pipeline yields the MMSE result without touching
+DS source.
+
+### Why CRC outcomes are identical to LS in practice
+
+For per-subcarrier MMSE on the DroneID waveform, `X_mmse` and `X_ls`
+differ only by a **real positive scalar per bin**
+(`α = |H|² / (|H|² + σ²) ∈ (0, 1]`). DJI's DroneID frames use **hard-
+decision QPSK without forward error correction**, and QPSK hard
+decisions only look at the sign of `Re(X)` and `Im(X)` — invariant to
+positive real scaling. The two equalizers therefore produce **identical
+bit decisions**, hence identical CRC outcomes, on every realisation.
+
+This is confirmed by `evaluate_snr.py`, a synthetic-SNR sweep harness:
+
+```bash
+python -u uav_telemetry_pipeline/evaluate_snr.py \
+    -i uav_telemetry_pipeline/data/samples/mavic_air_2 \
+    -s 50e6 \
+    --snr-min -5 --snr-max 25 --snr-step 2 --trials 10 \
+    --multipath-taps 3 --multipath-delay-spread-ns 500 \
+    --rician-k-db 8.0 --show-channel-response \
+    -o uav_telemetry_pipeline/results/fer_vs_snr.csv
+```
+
+Produces three figures: CRC-pass-rate vs SNR for flat AWGN
+(`*_flat.png`), for AWGN + Rician multipath (`*_multipath.png`), and
+post-equalization MSE on synthetic channels (`*_evm.png`). On the
+mavic_air_2 reference, the CRC curves overlap exactly — the analytical
+equivalence — while the EVM curve shows MMSE has measurably lower MSE.
+The MMSE advantage would only translate to CRC on a system using
+**soft-decision** QPSK with FEC, which DroneID lacks.
+
+---
+
+## Track smoothing (Kalman)
+
+`tracking/kalman_tracker.py` adds a 6D constant-velocity Kalman filter
+over the decoded frames:
+
+| State | `[lat, lon, alt, v_lat, v_lon, v_alt]` |
+|---|---|
+| Observation | `[lat, lon, alt]` from each frame |
+| Process noise | discrete white-acceleration, `σ_p = 1e-5` (deg/m units) |
+| Measurement noise | `σ_meas_ok = 1e-4` (≈11 m), inflated 10× when `crc_ok = False` |
+
+CRC-failed frames are **soft-rejected** (R inflated 100× in variance)
+rather than dropped — preserving information when the tracker is short
+on samples. Enable via `--kalman`:
+
+```bash
+python -u uav_telemetry_pipeline/run_pipeline.py \
+    -i <capture.fc32> -s 50e6 --kalman \
+    -o results/track.json
+```
+
+The output JSON gains `smoothed_track` (list of `SmoothedState` dicts)
+and `track_metrics`:
+
+| Metric | Meaning |
+|---|---|
+| `rmse_raw_m` | RMS haversine distance from each raw frame to its smoothed point |
+| `rmse_smoothed_m` | RMS residual of smoothed track against its own 5-point moving average |
+| `smoothness_raw` / `smoothness_smoothed` | Mean consecutive-sample displacement (m); lower = smoother |
+| `outliers_rejected` | Count of raw frames > 10 m from smoothed track |
+
+`tracking/track_evaluator.py` also exposes `plot()` for a raw-vs-smoothed
+scatter (grey dots / blue line). Unit tests in
+`tests/test_kalman_tracker.py` cover init, CRC inflation, outlier
+suppression (≥50% of a +0.01° lat spike is rejected after 5 stable
+samples), straight-line variance reduction, and reset semantics.
+
+---
+
+## Tests
+
+All unit tests run under pytest from the project root:
+
+```bash
+source ~/projects/PFE/DroneSecurity/.venv/bin/activate
+python -m pytest uav_telemetry_pipeline/tests/ -v
+```
+
+| File | Coverage |
+|---|---|
+| `tests/test_mmse_equalizer.py` | 13 tests — MMSE channel estimate, multiplicative weights, guard-bin noise estimation, packet-level averaging, shape contracts |
+| `tests/test_kalman_tracker.py` | 7 tests — Kalman bootstrap, CRC-based R inflation, outlier suppression, variance reduction, reset, evaluator sanity |
+
+---
+
 ## Layout
 
 ```
 uav_telemetry_pipeline/
 ├── run_pipeline.py        ← CLI entry point (use this)
+├── evaluate_snr.py        ← LS vs MMSE SNR sweep + Rician multipath
 ├── config.py              ← path/env resolution
 ├── decoders/
 │   ├── base.py            ← BaseDecoder + TelemetryFrame
 │   ├── dronesecurity.py   ← primary subprocess decoder
-│   ├── proto17.py         ← Octave fallback
-│   └── native.py          ← in-process Python decoder
+│   ├── proto17.py         ← Octave fallback (opt-in)
+│   ├── native.py          ← in-process Python decoder
+│   ├── mmse_equalizer.py  ← Wiener-shrinkage + multiplicative MMSE weights
+│   └── mmse_decoder.py    ← NativeDecoder variant using MMSE equalization
 ├── detection/
 │   ├── zc_correlator.py   ← matched filter + spectrum analysis
 │   └── burst_detector.py  ← STFT-based energy detection (legacy)
-├── preprocessor/          ← IQ file loaders
+├── preprocessor/
+│   └── shift_and_filter.py ← carrier shift + bandpass + polyphase decimation
+├── tracking/
+│   ├── kalman_tracker.py  ← 6D constant-velocity Kalman filter
+│   └── track_evaluator.py ← RMSE / smoothness / outlier metrics + plot
+├── tests/                 ← pytest unit tests
 ├── telemetry/             ← (legacy) stdout parser + dataclasses
 ├── pipeline.py            ← (legacy) prior CLI; superseded by run_pipeline.py
 ├── results/               ← JSON outputs land here
@@ -379,8 +520,9 @@ in the project notes. New work should target `run_pipeline.py` and the
 ```
 numpy>=1.24, scipy>=1.10, pandas>=2.0
 pyyaml>=6.0           # optional, for config.yaml
-matplotlib>=3.7       # debug plots
-bitarray>=2.4, crcmod>=1.7, setuptools>=70.0    # for NativeDecoder
+matplotlib>=3.7       # debug plots + evaluate_snr.py + Kalman track plot
+bitarray>=2.4, crcmod>=1.7, setuptools>=70.0    # for NativeDecoder / MMSEDecoder
+pytest>=8.0           # to run uav_telemetry_pipeline/tests/
 ```
 
 Octave (`/usr/bin/octave`) is optional — Proto17Decoder skips itself

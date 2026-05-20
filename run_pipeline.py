@@ -39,6 +39,7 @@ from uav_telemetry_pipeline.config import PipelineConfig  # noqa: E402
 from uav_telemetry_pipeline.decoders import (  # noqa: E402
     BaseDecoder,
     DroneSecurityDecoder,
+    MMSEDecoder,
     NativeDecoder,
     Proto17Decoder,
     TelemetryFrame,
@@ -67,6 +68,7 @@ def _build_decoders(
     legacy: bool,
     timeout_s: float,
     enable_proto17: bool = False,
+    use_mmse: bool = False,
 ) -> list[BaseDecoder]:
     """Build the decoder fallback chain.
 
@@ -75,6 +77,12 @@ def _build_decoders(
     multi-second captures without ever returning a result. Pass
     ``enable_proto17=True`` (or ``--enable-proto17`` on the CLI) to opt
     back in for ZC-burst counting.
+
+    When ``use_mmse=True`` (``--use-mmse``), the in-process Native decoder
+    is replaced by :class:`MMSEDecoder`, which substitutes DroneSecurity's
+    LS / Zero-Forcing channel equalization for an MMSE / Wiener-shrinkage
+    estimate. Useful at low SNR where LS amplifies noise on weak
+    subcarriers; for high-SNR captures the two are numerically equivalent.
     """
     decoders: list[BaseDecoder] = [
         DroneSecurityDecoder(config=config, timeout_s=timeout_s,
@@ -82,7 +90,10 @@ def _build_decoders(
     ]
     if enable_proto17:
         decoders.append(Proto17Decoder(config=config))
-    decoders.append(NativeDecoder(config=config, legacy=legacy))
+    if use_mmse:
+        decoders.append(MMSEDecoder(config=config, legacy=legacy))
+    else:
+        decoders.append(NativeDecoder(config=config, legacy=legacy))
     return decoders
 
 
@@ -351,6 +362,17 @@ def main() -> int:
                              "find_zc.m in Octave is very slow and almost "
                              "always hits the 10-minute timeout without "
                              "producing useful output.")
+    parser.add_argument("--use-mmse", action="store_true",
+                        help="Replace the in-process Native decoder with "
+                             "MMSEDecoder, which uses MMSE / Wiener-shrinkage "
+                             "channel equalization instead of DroneSecurity's "
+                             "LS / Zero-Forcing. Helps at low SNR; numerically "
+                             "equivalent to LS at high SNR.")
+    parser.add_argument("--kalman", action="store_true",
+                        help="After decoding, pass frames through a constant-"
+                             "velocity Kalman tracker and append a "
+                             "'smoothed_track' field plus 'track_metrics' to "
+                             "the output JSON.")
     parser.add_argument("--verbose", "-v", action="store_true")
     args = parser.parse_args()
 
@@ -442,6 +464,7 @@ def main() -> int:
             legacy=args.legacy,
             timeout_s=args.decoder_timeout,
             enable_proto17=args.enable_proto17,
+            use_mmse=args.use_mmse,
         )
         winner, frames, attempts = _run_chain(
             decoders, decoder_input_path, decoder_input_rate,
@@ -475,6 +498,20 @@ def main() -> int:
         "diagnostic": diagnostic,
         "frames": frames,
     }
+
+    if args.kalman and frames:
+        from uav_telemetry_pipeline.tracking import KalmanTracker, TrackEvaluator
+        tracker = KalmanTracker()
+        for f in frames:
+            tracker.update(f)
+        smoothed = tracker.get_track()
+        result_doc["smoothed_track"] = smoothed
+        result_doc["track_metrics"] = TrackEvaluator().evaluate(frames, smoothed)
+        logger.info(
+            "Kalman tracker: %d smoothed point(s), %d outlier(s) rejected",
+            len(smoothed), result_doc["track_metrics"].get("outliers_rejected", 0),
+        )
+
     output_path.write_text(json.dumps(result_doc, indent=2))
 
     if shifted_temp_path is not None and not args.keep_shifted_file:

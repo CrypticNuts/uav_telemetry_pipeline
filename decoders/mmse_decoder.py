@@ -100,15 +100,17 @@ class MMSEDecoder(NativeDecoder):
         return None
 
     def _replace_channel_with_mmse(self, packet) -> None:
-        """Recompute ``packet.channel`` using MMSE instead of LS.
+        """Replace ``packet.channel`` with the MMSE-equivalent reciprocal.
 
-        Reads the same ZC pilots ``Packet`` already used during construction
-        and pulls the ZC root sequences from the DroneSecurity source. The
-        averaged MMSE channel replaces the LS one in-place.
+        DroneSecurity's downstream equalization step does ``Y / packet.channel``.
+        To produce the multiplicative MMSE result ``X = Y * W`` where
+        ``W = conj(H_ls) / (|H_ls|^2 + sigma^2)``, we store ``1 / W`` in
+        ``packet.channel``. The divisive code path then computes
+        ``Y / (1/W) = Y * W`` — exact MMSE equalization, no DS source
+        modification.
         """
         zc_indices = list(packet.ZC_SYMBOL_IDX)
         zc_roots = self._lookup_zc_roots(packet)
-
         zc_seqs = [self._zc_seq_for_root(packet, r) for r in zc_roots]
 
         rx_pilots = [packet.symbols_freq_domain[i] for i in zc_indices]
@@ -117,13 +119,19 @@ class MMSEDecoder(NativeDecoder):
             for rx, tx in zip(rx_pilots, zc_seqs)
         ]))
 
-        channel, _ = self.equalizer.equalize_packet(
-            symbols_freq_domain=packet.symbols_freq_domain,
-            zc_symbol_indices=zc_indices,
-            zc_sequences=zc_seqs,
-            noise_var=noise_var,
-        )
-        packet.channel = channel
+        # Average MMSE weights across the two pilots — assumes the channel
+        # is coherent across the 2 symbol positions (≈ 70 µs apart at
+        # 15 kHz spacing, well within the channel coherence time).
+        weights_per_pilot = [
+            self.equalizer.equalization_weights(rx, tx, noise_var)
+            for rx, tx in zip(rx_pilots, zc_seqs)
+        ]
+        W = np.mean(np.stack(weights_per_pilot, axis=0), axis=0).astype(np.complex64)
+
+        # Store 1/W so the divisive equalizer in Packet produces Y * W.
+        eps = np.complex64(1e-30 + 0j)
+        W_safe = np.where(np.abs(W) < 1e-30, eps, W)
+        packet.channel = (1.0 / W_safe).astype(np.complex64)
 
     @staticmethod
     def _lookup_zc_roots(packet) -> tuple[int, int]:

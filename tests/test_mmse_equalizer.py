@@ -177,3 +177,89 @@ def test_custom_config():
     eq = MMSEEqualizer(MMSEEqualizerConfig(ncarriers=73, nfft=128))
     assert len(eq.active_indices) == 73
     assert len(eq.guard_indices) == 128 - 73
+
+
+# ----------------------------- multiplicative MMSE equalizer (W form)
+
+
+def test_equalization_weights_reduce_to_ls_inverse_when_noise_zero():
+    """At noise_var=0, W = conj(H_ls)/(|H_ls|^2) = 1 / H_ls (LS inverse)."""
+    eq = MMSEEqualizer()
+    tx = _unit_zc_like()
+    H_true = _random_channel()
+    rx = (H_true * tx).astype(np.complex64)
+
+    W = eq.equalization_weights(rx, tx, noise_var=0.0)
+
+    tx_dc_safe = tx.copy()
+    tx_dc_safe[NCARRIERS // 2] = 1.0 + 0.0j
+    H_ls = rx / tx_dc_safe
+    expected_W = 1.0 / H_ls  # LS divisive equalizer expressed multiplicatively
+
+    np.testing.assert_allclose(W, expected_W, rtol=1e-4, atol=1e-5)
+
+
+def test_multiplicative_mmse_beats_ls_on_frequency_selective_channel():
+    """MMSE equalization should recover the data symbol with lower MSE than
+    LS on a channel that has deep nulls (small |H| on some bins).
+
+    Realistic setup: a known **pilot** is used for channel estimation, and
+    a **different** data symbol is then equalized using that estimate.
+    Both equalizers see the same noise realization (paired comparison).
+    """
+    eq = MMSEEqualizer()
+    pilot = _unit_zc_like()       # known reference (transmitted ZC)
+    data = _unit_zc_like()        # what we want to recover (independent of pilot)
+
+    H_true = _random_channel()
+    null_idx = RNG.choice(NCARRIERS, size=20, replace=False)
+    H_true[null_idx] *= 0.03  # ~30 dB attenuation on null bins
+
+    snr_db = 6.0
+    signal_power = float(np.mean(np.abs(H_true) ** 2))  # ~1.0
+    noise_var = signal_power / (10.0 ** (snr_db / 10.0))
+
+    # Average noise across many trials so MMSE's statistical advantage shows.
+    n_trials = 80
+    mse_ls_acc = 0.0
+    mse_mmse_acc = 0.0
+    mask = np.ones(NCARRIERS, dtype=bool)
+    mask[NCARRIERS // 2] = False  # exclude DC
+
+    for _ in range(n_trials):
+        n_p = (RNG.standard_normal(NCARRIERS) +
+               1j * RNG.standard_normal(NCARRIERS)) * np.sqrt(noise_var / 2.0)
+        n_d = (RNG.standard_normal(NCARRIERS) +
+               1j * RNG.standard_normal(NCARRIERS)) * np.sqrt(noise_var / 2.0)
+        rx_pilot = (H_true * pilot + n_p).astype(np.complex64)
+        rx_data = (H_true * data + n_d).astype(np.complex64)
+
+        # LS: divide by the LS channel estimate from the pilot.
+        pilot_dc_safe = pilot.copy()
+        pilot_dc_safe[NCARRIERS // 2] = 1.0 + 0.0j
+        H_ls = rx_pilot / pilot_dc_safe
+        X_ls = rx_data / np.where(np.abs(H_ls) < 1e-30, 1e-30 + 0j, H_ls)
+
+        # MMSE: multiplicative weights derived from the pilot.
+        W = eq.equalization_weights(rx_pilot, pilot, noise_var)
+        X_mmse = eq.apply_weights(rx_data, W)
+
+        mse_ls_acc += float(np.mean(np.abs(X_ls[mask] - data[mask]) ** 2))
+        mse_mmse_acc += float(np.mean(np.abs(X_mmse[mask] - data[mask]) ** 2))
+
+    mse_ls = mse_ls_acc / n_trials
+    mse_mmse = mse_mmse_acc / n_trials
+    assert mse_mmse < mse_ls, (
+        f"MMSE MSE {mse_mmse:.4f} not lower than LS MSE {mse_ls:.4f} "
+        f"on a frequency-selective channel — multiplicative MMSE should "
+        f"suppress null bins instead of amplifying them."
+    )
+
+
+def test_apply_weights_shape_contract():
+    eq = MMSEEqualizer()
+    W = np.ones(NCARRIERS, dtype=np.complex64)
+    sym = np.ones(NCARRIERS, dtype=np.complex64)
+    out = eq.apply_weights(sym, W)
+    assert out.shape == (NCARRIERS,)
+    assert out.dtype == np.complex64

@@ -1,0 +1,45 @@
+{
+  "input": "uav_telemetry_pipeline/data/samples/mavic_air_2",
+  "sample_rate_hz": 50000000.0,
+  "preprocessing": null,
+  "decoder_used": "dronesecurity",
+  "frames_decoded": 1,
+  "crc_ok_frames": 1,
+  "crc_pass_rate": 1.0,
+  "first_gps_fix": {
+    "lat": 51.44633393111904,
+    "lon": 7.26721594197086
+  },
+  "attempts": [
+    {
+      "decoder": "dronesecurity",
+      "status": "ran",
+      "frames": 1,
+      "crc_ok": 1
+    }
+  ],
+  "diagnostic": null,
+  "frames": [
+    {
+      "lat": 51.44633393111904,
+      "lon": 7.26721594197086,
+      "altitude_m": 42.97,
+      "height_m": 12.8,
+      "vel_north": -2.0,
+      "vel_east": 2.0,
+      "vel_up": 26.0,
+      "yaw": -13295,
+      "serial": "1WNBH3900201N1",
+      "device_type": "Mavic Air 2",
+      "app_lat": 51.44620788045814,
+      "app_lon": 7.267101350460944,
+      "home_lat": 51.4462594466376,
+      "home_lon": 7.267353451782758,
+      "sequence_number": 591,
+      "gps_time_ms": 1650542026258,
+      "crc_ok": true,
+      "decoder": "dronesecurity",
+      "timestamp_sample": -1
+    }
+  ]
+}

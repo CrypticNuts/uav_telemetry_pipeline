@@ -173,6 +173,54 @@ class MMSEEqualizer:
         """
         return self._safe_divide(symbol_f, channel)
 
+    # --------------------------------------------- multiplicative MMSE form
+
+    def equalization_weights(
+        self,
+        received_signal: ArrayC,
+        expected_signal: ArrayC,
+        noise_var: float,
+    ) -> ArrayC:
+        """Compute the **multiplicative** MMSE equalizer weights.
+
+        The Wiener-shrunk channel estimate from :meth:`equalize` denoises
+        the LS estimate, but when used as a divisor in symbol equalization
+        (``Y / H_mmse``) the shrinkage is *undone* — small-magnitude bins
+        become large when inverted. The proper MMSE equalizer is a
+        per-subcarrier complex weight applied multiplicatively:
+
+            W = conj(H_ls) / (|H_ls|^2 + sigma^2)
+            X_est = W * Y
+
+        On null subcarriers (small |H_ls|), ``W`` is small and the
+        equalized output is suppressed instead of amplified — that's the
+        actual noise-rejection mechanism MMSE provides over LS.
+
+        Returns
+        -------
+        W : complex array, shape (ncarriers,)
+            The MMSE equalization weights. At ``noise_var=0`` this
+            reduces to ``1 / H_ls`` (LS inverse).
+        """
+        rx = np.asarray(received_signal, dtype=np.complex64)
+        tx = np.asarray(expected_signal, dtype=np.complex64).copy()
+        if rx.shape != (self.cfg.ncarriers,) or tx.shape != (self.cfg.ncarriers,):
+            raise ValueError(
+                f"received/expected must have shape ({self.cfg.ncarriers},), "
+                f"got rx={rx.shape}, tx={tx.shape}"
+            )
+        tx[self.cfg.ncarriers // 2] = 1.0 + 0.0j
+
+        h_ls = self._safe_divide(rx, tx)
+        mag2 = (h_ls.real * h_ls.real + h_ls.imag * h_ls.imag).astype(np.float64)
+        denom = (mag2 + float(noise_var) + self.cfg.eps).astype(np.complex64)
+        return (np.conj(h_ls) / denom).astype(np.complex64)
+
+    @staticmethod
+    def apply_weights(symbol_f: ArrayC, weights: ArrayC) -> ArrayC:
+        """Apply multiplicative MMSE weights to one data symbol."""
+        return (np.asarray(symbol_f) * np.asarray(weights)).astype(np.complex64)
+
     # --------------------------------------------------------- packet helper
 
     def equalize_packet(

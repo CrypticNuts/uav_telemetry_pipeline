@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UAV Telemetry Dashboard</title>
+
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; font-family: ui-sans-serif, system-ui, sans-serif; background: #0f1115; color: #e6e6e6; }
+    #app { display: grid; grid-template-rows: 48px 1fr; grid-template-columns: 1fr 320px; height: 100vh; }
+    header { grid-column: 1 / span 2; display: flex; align-items: center; padding: 0 16px; background: #1a1d24; border-bottom: 1px solid #2a2e38; gap: 16px; }
+    header .title { font-weight: 600; letter-spacing: 0.3px; }
+    header .pill { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .pill.live { background: #1e3a2b; color: #6ee08e; }
+    .pill.replay { background: #3a2f1e; color: #e0b56e; }
+    .pill.offline { background: #3a1e22; color: #e06e76; }
+    header .stats { margin-left: auto; font-size: 13px; color: #a7adba; display: flex; gap: 18px; }
+    header .stats b { color: #e6e6e6; font-weight: 600; }
+    #map { width: 100%; height: 100%; background: #11141a; }
+    aside { background: #15181f; border-left: 1px solid #2a2e38; padding: 16px; overflow-y: auto; }
+    aside h2 { margin: 0 0 12px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #a7adba; }
+    .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #262932; font-size: 14px; }
+    .row .k { color: #a7adba; }
+    .row .v { font-variant-numeric: tabular-nums; font-weight: 500; }
+    .badge-bad { color: #ff7a85; font-weight: 600; }
+    .badge-ok  { color: #6ee08e; font-weight: 600; }
+    .muted { color: #6b7282; font-size: 12px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span class="title">UAV Telemetry Dashboard</span>
+      <span id="mode-pill" class="pill offline">CONNECTING</span>
+      <div class="stats">
+        <span>Frames: <b id="stat-count">0</b></span>
+        <span>Serial: <b id="stat-serial">—</b></span>
+        <span>Decoder: <b id="stat-decoder">—</b></span>
+      </div>
+    </header>
+
+    <div id="map"></div>
+
+    <aside>
+      <h2>Last frame</h2>
+      <div class="row"><span class="k">Timestamp</span><span class="v" id="f-ts">—</span></div>
+      <div class="row"><span class="k">Decoder</span><span class="v" id="f-dec">—</span></div>
+      <div class="row"><span class="k">Drone lat</span><span class="v" id="f-lat">—</span></div>
+      <div class="row"><span class="k">Drone lon</span><span class="v" id="f-lon">—</span></div>
+      <div class="row"><span class="k">Altitude (m)</span><span class="v" id="f-alt">—</span></div>
+      <div class="row"><span class="k">Speed (m/s)</span><span class="v" id="f-spd">—</span></div>
+      <div class="row"><span class="k">Pilot lat</span><span class="v" id="f-plat">—</span></div>
+      <div class="row"><span class="k">Pilot lon</span><span class="v" id="f-plon">—</span></div>
+      <div class="row"><span class="k">Serial</span><span class="v" id="f-sn">—</span></div>
+      <div class="row"><span class="k">CRC</span><span class="v" id="f-crc">—</span></div>
+      <p class="muted">Drone marker turns red when CRC fails. The path traces the smoothed drone position over time.</p>
+    </aside>
+  </div>
+
+  <script>
+    // ---------- Map setup ----------
+    const TUNISIA = [34.0, 9.0]; // default centre until first frame arrives
+    const map = L.map('map', { zoomControl: true }).setView(TUNISIA, 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    function makeIcon(color) {
+      return L.divIcon({
+        className: 'drone-icon',
+        html: `<div style="width:18px;height:18px;border-radius:50%;background:${color};border:3px solid #0f1115;box-shadow:0 0 6px ${color};"></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+      });
+    }
+    const ICON_OK   = makeIcon('#4aa3ff');
+    const ICON_BAD  = makeIcon('#ff5a64');
+    const ICON_PILOT = L.divIcon({
+      className: 'pilot-icon',
+      html: '<div style="width:14px;height:14px;background:#e0b56e;border:2px solid #0f1115;transform:rotate(45deg);"></div>',
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+    });
+
+    let droneMarker = null;
+    let pilotMarker = null;
+    const pathLatLngs = [];
+    const pathLine = L.polyline([], { color: '#4aa3ff', weight: 3, opacity: 0.8 }).addTo(map);
+    let centred = false;
+    let frameCount = 0;
+
+    function setMode(mode) {
+      const el = document.getElementById('mode-pill');
+      el.classList.remove('live', 'replay', 'offline');
+      if (mode === 'live')   { el.textContent = 'LIVE';   el.classList.add('live'); }
+      else if (mode === 'replay') { el.textContent = 'REPLAY'; el.classList.add('replay'); }
+      else                   { el.textContent = mode || 'OFFLINE'; el.classList.add('offline'); }
+    }
+
+    function fmt(n, digits = 5) {
+      return (typeof n === 'number' && !Number.isNaN(n)) ? n.toFixed(digits) : '—';
+    }
+
+    function applyFrame(frame) {
+      frameCount += 1;
+      document.getElementById('stat-count').textContent = frameCount;
+      const sn = frame.serial_number || '—';
+      document.getElementById('stat-serial').textContent = sn;
+      document.getElementById('stat-decoder').textContent = frame.decoder || '—';
+
+      document.getElementById('f-ts').textContent  = frame.timestamp || '—';
+      document.getElementById('f-dec').textContent = frame.decoder || '—';
+      document.getElementById('f-lat').textContent = fmt(frame.drone_lat);
+      document.getElementById('f-lon').textContent = fmt(frame.drone_lon);
+      document.getElementById('f-alt').textContent = fmt(frame.drone_alt, 2);
+      document.getElementById('f-spd').textContent = fmt(frame.drone_speed, 2);
+      document.getElementById('f-plat').textContent = fmt(frame.pilot_lat);
+      document.getElementById('f-plon').textContent = fmt(frame.pilot_lon);
+      document.getElementById('f-sn').textContent  = sn;
+      const crcEl = document.getElementById('f-crc');
+      if (frame.crc_valid === false) {
+        crcEl.textContent = 'FAIL';
+        crcEl.className = 'v badge-bad';
+      } else if (frame.crc_valid === true) {
+        crcEl.textContent = 'OK';
+        crcEl.className = 'v badge-ok';
+      } else {
+        crcEl.textContent = '—';
+        crcEl.className = 'v';
+      }
+
+      // Drone marker + path.
+      const dLat = frame.drone_lat, dLon = frame.drone_lon;
+      if (typeof dLat === 'number' && typeof dLon === 'number') {
+        const icon = (frame.crc_valid === false) ? ICON_BAD : ICON_OK;
+        if (!droneMarker) {
+          droneMarker = L.marker([dLat, dLon], { icon }).addTo(map);
+        } else {
+          droneMarker.setLatLng([dLat, dLon]);
+          droneMarker.setIcon(icon);
+        }
+        pathLatLngs.push([dLat, dLon]);
+        pathLine.setLatLngs(pathLatLngs);
+        if (!centred) {
+          map.setView([dLat, dLon], 17);
+          centred = true;
+        }
+      }
+
+      // Pilot marker — fix on first valid pilot position.
+      const pLat = frame.pilot_lat, pLon = frame.pilot_lon;
+      if (!pilotMarker && typeof pLat === 'number' && typeof pLon === 'number'
+          && (pLat !== 0 || pLon !== 0)) {
+        pilotMarker = L.marker([pLat, pLon], { icon: ICON_PILOT })
+          .addTo(map)
+          .bindTooltip('Pilot', { permanent: false });
+      }
+    }
+
+    // ---------- SSE with auto-reconnect ----------
+    let es = null;
+    const params = new URLSearchParams(window.location.search);
+    const replayFile = params.get('replay');
+    const replaySpeed = params.get('speed') || '1.0';
+    const endpoint = replayFile
+      ? `/replay?file=${encodeURIComponent(replayFile)}&speed=${encodeURIComponent(replaySpeed)}`
+      : '/stream';
+
+    function connect() {
+      try { if (es) es.close(); } catch (_) {}
+      es = new EventSource(endpoint);
+      es.onopen = () => setMode(replayFile ? 'replay' : 'live');
+      es.addEventListener('mode', (ev) => {
+        try {
+          const meta = JSON.parse(ev.data);
+          if (meta.mode) setMode(meta.mode);
+        } catch (_) {}
+      });
+      es.addEventListener('end', () => setMode('REPLAY DONE'));
+      es.onmessage = (ev) => {
+        try {
+          const frame = JSON.parse(ev.data);
+          applyFrame(frame);
+        } catch (_) { /* ignore malformed */ }
+      };
+      es.onerror = () => {
+        setMode('RECONNECTING');
+        try { es.close(); } catch (_) {}
+        setTimeout(connect, 3000);
+      };
+    }
+    connect();
+  </script>
+</body>
+</html>

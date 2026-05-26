@@ -89,29 +89,52 @@ class NativeDecoder(BaseDecoder):
             logger.error("IQ file not found: %s", iq_path)
             return []
 
+        raw = np.memmap(iq_path, mode="r", dtype="<f").astype(np.float32).view(np.complex64)
+        return self.decode_samples(np.asarray(raw), sample_rate)
+
+    def decode_samples(
+        self,
+        samples: np.ndarray,
+        sample_rate: float,
+        sample_offset_base: int = 0,
+    ) -> list[TelemetryFrame]:
+        """Decode an in-memory complex64 IQ buffer.
+
+        This is the path used by :mod:`uav_telemetry_pipeline.live` — it
+        avoids round-tripping through a temp file when samples arrive
+        directly from the SDR. ``sample_offset_base`` lets a live caller
+        report a monotonic sample index across chunks (e.g. running
+        sample count since session start) so downstream timestamps
+        stay ordered.
+        """
+        if not self.is_available():
+            logger.warning("NativeDecoder unavailable: %s missing",
+                           self.config.dronesecurity_src)
+            return []
+
         try:
             SpectrumCapture, Packet, Decoder, DroneIDPacket = self._load_modules()
         except RuntimeError as exc:
             logger.error("%s", exc)
             return []
 
-        raw = np.memmap(iq_path, mode="r", dtype="<f").astype(np.float32).view(np.complex64)
+        if samples.dtype != np.complex64:
+            samples = samples.astype(np.complex64, copy=False)
+
         chunk = int(0.5 * sample_rate)
-        n_chunks = max(1, len(raw) // chunk + (1 if len(raw) % chunk else 0))
+        n_chunks = max(1, len(samples) // chunk + (1 if len(samples) % chunk else 0))
         logger.info(
             "NativeDecoder: %d samples, %d chunk(s) of %d",
-            len(raw), n_chunks, chunk,
+            len(samples), n_chunks, chunk,
         )
 
         frames: list[TelemetryFrame] = []
         sample_cursor = 0
-        # DroneSecurity prints a lot — silence its stdout/stderr while we
-        # drive it programmatically. Errors still propagate via exceptions.
         for i in range(n_chunks):
             start = i * chunk
-            end = min(start + chunk, len(raw))
+            end = min(start + chunk, len(samples))
             sample_cursor = start
-            slice_ = np.asarray(raw[start:end])
+            slice_ = np.asarray(samples[start:end])
             try:
                 with contextlib.redirect_stdout(io.StringIO()), \
                         contextlib.redirect_stderr(io.StringIO()):
@@ -127,7 +150,7 @@ class NativeDecoder(BaseDecoder):
             for pkt_idx in range(len(capture.packets)):
                 frame = self._decode_one(
                     capture, pkt_idx, Packet, Decoder, DroneIDPacket,
-                    sample_offset=sample_cursor,
+                    sample_offset=sample_offset_base + sample_cursor,
                 )
                 if frame is not None:
                     frames.append(frame)

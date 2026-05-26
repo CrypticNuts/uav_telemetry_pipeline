@@ -31,6 +31,12 @@ python -u uav_telemetry_pipeline/run_pipeline.py \
 # Descriptive band analysis (no decoding, no ZC matching)
 python -u uav_telemetry_pipeline/run_pipeline.py \
     --input <capture.fc32> --sample-rate 50e6 --spectrum-only
+
+# Live mode — pipeline drives a USRP B200/B205 and streams decoded
+# frames to a jsonl the dashboard can tail in real time. See the
+# "Live receiver (USRP)" section below for details.
+python -m uav_telemetry_pipeline.live \
+    --jsonl dashboard/telemetry_stream.jsonl --sample-rate 50e6
 ```
 
 On a known-good capture (e.g. `mini2_sm` at 50 Msps) the runner produces:
@@ -177,6 +183,188 @@ PYTHONUNBUFFERED=1 python -u uav_telemetry_pipeline/run_pipeline.py ...
 
 Single-threaded scipy/numpy avoids WSL2 thread-thrash; unbuffered Python
 lets you `tail -f` the log during long runs.
+
+---
+
+## Live receiver (USRP)
+
+`uav_telemetry_pipeline/live.py` is the live counterpart of
+`run_pipeline.py`: instead of reading a `.cfile` from disk, it drives a
+USRP B-series radio directly, scans the 16 standard DJI DroneID center
+frequencies (2.4 + 5.8 GHz bands), feeds each received chunk to
+`NativeDecoder.decode_samples()`, and appends decoded frames to a
+`.jsonl` file in the dashboard's schema — so the dashboard can show
+real-time drone tracks while the radio is still streaming.
+
+### Architecture
+
+```
+USRP B-series (UHD device)
+        │
+        ▼      LiveSession scans 16 DJI bands (--frequencies to override)
+  _receive_chunk(num_samps = duration × sample_rate)
+        │
+        ├──→ IQRecorder.write              (optional, --save-iq)
+        │      ↳ iq_captures/iq_<UTC>_<freq>MHz_<rate>Msps.cfile
+        │      ↳ iq_captures/index.csv
+        │
+        ▼
+  NativeDecoder.decode_samples(samples, sample_rate)
+        │      (in-process, no temp file — same chain as offline)
+        ▼
+  list[TelemetryFrame]
+        │
+        ├──→ KalmanTracker.update(frame)   (optional, --kalman)
+        │
+        ▼
+  frame_to_dashboard_jsonl(frame, center_freq_hz)
+        │      (byte-identical to dashboard/pipeline_to_jsonl.py)
+        ▼
+  JsonlSink → telemetry_stream.jsonl  ←  dashboard tails this from EOF
+```
+
+### Hardware requirements
+
+| Component | Notes |
+|---|---|
+| USRP B200 / B205-mini | Any UHD-recognised device (`uhd_find_devices` lists it) |
+| UHD runtime | `sudo apt install uhd-host libuhd-dev python3-uhd` (Debian/Ubuntu) |
+| 2.4 + 5.8 GHz antenna | Same setup as `DroneSecurity`'s live receiver |
+
+The `uhd` Python binding is **lazy-imported** — `live.py` and its
+helpers (`frame_to_dashboard_jsonl`, `IQRecorder`, `JsonlSink`) can be
+imported on a laptop without an SDR; the radio is only touched at the
+start of `LiveSession.run()`.
+
+### Usage
+
+```
+python -m uav_telemetry_pipeline.live --jsonl <FILE> [options]
+
+  --jsonl              Output .jsonl path (dashboard tails this)    [required]
+  --sample-rate, -s    USRP RX rate in Hz                           (default 50e6)
+  --duration, -t       Capture duration per band, seconds           (default 1.3)
+  --gain, -g           RX gain in dB (0 = AGC)                      (default 0)
+  --legacy, -l         Mavic Pro / Mavic 2 mode (legacy CP layout)
+  --frequencies        Override scan list (space-separated MHz values)
+  --save-iq            Persist each received chunk as a .cfile
+  --iq-dir             Directory for saved IQ chunks                (default ./iq_captures)
+  --kalman             Smooth CRC-OK frames through KalmanTracker
+  --max-chunks         Stop after N chunks (0 = run until Ctrl-C)
+  -v, --verbose
+```
+
+### Recipes
+
+**Minimal — pipeline drives the SDR, dashboard tails the jsonl**
+
+```bash
+# Terminal 1: live receiver
+source ~/projects/PFE/DroneSecurity/.venv/bin/activate
+python -m uav_telemetry_pipeline.live \
+    --jsonl uav_telemetry_pipeline/dashboard/telemetry_stream.jsonl
+
+# Terminal 2: dashboard
+cd uav_telemetry_pipeline/dashboard
+python app.py --file telemetry_stream.jsonl
+# open http://127.0.0.1:5000/
+```
+
+**Live + IQ archive + Kalman smoothing**
+
+Records every chunk to disk *and* runs the full live pipeline. The
+saved `.cfile`s are drop-in replayable through the offline pipeline
+(`run_pipeline.py --input <file> --sample-rate 50e6`) because they
+share the interleaved-float32 layout.
+
+```bash
+python -m uav_telemetry_pipeline.live \
+    --jsonl dashboard/telemetry_stream.jsonl \
+    --sample-rate 50e6 \
+    --save-iq --iq-dir captures/run1 \
+    --kalman \
+    --max-chunks 20
+```
+
+**Bounded smoke-test (~2.6 GB at defaults)**
+
+Disk usage at the default `-t 1.3 -s 50e6` is **~520 MB per chunk**
+(`1.3 s × 50 Msps × 8 bytes/complex64`). Use `--max-chunks` and / or a
+shorter `--duration` for first-time runs:
+
+```bash
+python -m uav_telemetry_pipeline.live \
+    --jsonl test.jsonl --duration 0.5 --max-chunks 5 \
+    --save-iq --iq-dir captures/smoke
+```
+
+**Narrow scan (skip the 5.8 GHz band)**
+
+```bash
+python -m uav_telemetry_pipeline.live \
+    --jsonl dashboard/telemetry_stream.jsonl \
+    --frequencies 2414.5 2434.5 2444.5 2459.5 2474.5
+```
+
+### Output schema
+
+Each `.jsonl` line matches the dashboard schema documented in
+`dashboard/README.md`:
+
+```json
+{"timestamp":"2026-05-25T14:30:12.123+00:00","decoder":"native",
+ "drone_lat":51.4463,"drone_lon":7.2672,"drone_alt":80.5,
+ "drone_speed":5.0,"pilot_lat":51.4463,"pilot_lon":7.2672,
+ "serial_number":"1WNBH3900201N1","crc_valid":true,
+ "center_freq_hz":2434500000.0}
+```
+
+The optional `center_freq_hz` field records which band the frame was
+captured on; the dashboard ignores unknown keys, so this is purely
+informational for offline analysis.
+
+The mapping is **byte-identical** to the offline replay path
+(`dashboard/pipeline_to_jsonl.py`): the same `TelemetryFrame` produces
+the same line whether it came from a recorded `.cfile` or live off the
+radio. Zero-fix frames emit `null` drone coordinates (so the dashboard
+marker doesn't snap to (0,0)) and out-of-range coordinates from
+CRC-failed frames are also nulled out.
+
+### Frequency locking behaviour
+
+When a chunk yields at least one CRC-OK frame, the scanner **locks**
+onto that center frequency and stays there until 10 consecutive chunks
+miss — same heuristic as DroneSecurity's upstream live receiver. This
+keeps you on a known drone band once acquisition succeeds rather than
+re-sweeping the full list every cycle.
+
+### Saved IQ files: dual-purpose
+
+The `--save-iq` flag writes each chunk in the same format and naming
+convention as the `DroneSecurity_with_iq_save` fork
+(`iq_<UTC>_<freq-MHz>MHz_<rate-Msps>Msps.cfile`), with an `index.csv`
+manifest in the same directory. This means:
+
+* A live session leaves behind a reusable IQ archive without re-running
+  the SDR.
+* Each chunk can be replayed offline at any time:
+  ```bash
+  python -u uav_telemetry_pipeline/run_pipeline.py \
+      -i captures/run1/iq_20260525T143012.123_2434.500MHz_50.000Msps.cfile \
+      -s 50e6 --kalman
+  ```
+* If the live decoder misses a frame (e.g. CRC race on a noisy chunk),
+  it's still recoverable from the on-disk capture.
+
+### Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| `uhd python bindings not found` | Install with `apt install python3-uhd` (or `pip install pyuhd` if your distro doesn't ship the binding). |
+| `NativeDecoder unavailable — DroneSecurity src not found` | Set `$DRONESECURITY_PATH` or edit `config.yaml` — same resolution as the offline runner. |
+| `recv timeout on <freq>` repeatedly | USB cable / power problem on the B200; lower `--sample-rate` or check `uhd_usrp_probe`. |
+| Dashboard shows nothing but the live receiver logs CRC-OK frames | The dashboard tails from EOF. Restart the dashboard *after* the live receiver starts writing, or use the **Replay** mode (`?replay=<path>`) on the saved jsonl. |
+| Disk fills quickly when `--save-iq` is on | A full 16-band sweep at defaults ≈ **8.3 GB**. Cap with `--max-chunks`, shorten `--duration`, or use `--frequencies` to scan a subset. |
 
 ---
 
@@ -483,7 +671,8 @@ python -m pytest uav_telemetry_pipeline/tests/ -v
 
 ```
 uav_telemetry_pipeline/
-├── run_pipeline.py        ← CLI entry point (use this)
+├── run_pipeline.py        ← CLI entry point — offline (.cfile in)
+├── live.py                ← CLI entry point — live (USRP in, jsonl out)
 ├── evaluate_snr.py        ← LS vs MMSE SNR sweep + Rician multipath
 ├── config.py              ← path/env resolution
 ├── decoders/
